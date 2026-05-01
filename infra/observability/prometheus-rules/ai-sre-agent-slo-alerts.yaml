@@ -1,0 +1,47 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: ai-sre-agent-slo-alerts
+  namespace: observability
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+  - name: ai-sre-agent-slo-alerts
+    rules:
+
+    - alert: AISREAgentAvailabilityFastBurn
+      expr: slo:ai_sre_agent:availability_burnrate_5m > 14
+      for: 2m
+      labels:
+        severity: critical
+      annotations:
+        summary: "AI SRE Agent availability SLO fast burn"
+        description: "Availability SLO is burning too fast (5m window)."
+
+    - alert: AISREAgentAvailabilitySlowBurn
+      expr: slo:ai_sre_agent:availability_burnrate_30m > 3
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        summary: "AI SRE Agent availability SLO slow burn"
+        description: "Availability SLO is burning over 30m window."
+
+    - alert: AISREAgentLatencyFastBurn
+      expr: slo:ai_sre_agent:latency_burnrate_5m > 14
+      for: 2m
+      labels:
+        severity: critical
+      annotations:
+        summary: "AI SRE Agent latency SLO fast burn"
+        description: "Latency SLO is burning too fast (5m window)."
+
+    - alert: AISREAgentLatencySlowBurn
+      expr: slo:ai_sre_agent:latency_burnrate_30m > 3
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        summary: "AI SRE Agent latency SLO slow burn"
+        description: "Latency SLO is burning over 30m window."

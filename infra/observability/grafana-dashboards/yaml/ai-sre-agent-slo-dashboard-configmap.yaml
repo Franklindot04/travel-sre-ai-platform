@@ -1,0 +1,128 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ai-sre-agent-slo-dashboard
+  namespace: observability
+  labels:
+    grafana_dashboard: "1"
+    app: kube-prometheus-stack-grafana
+data:
+  ai-sre-agent-slo-dashboard.json: |
+    {
+      "id": null,
+      "title": "AI SRE Agent - SLO Dashboard",
+      "tags": ["slo", "sre", "ai-sre-agent"],
+      "timezone": "browser",
+      "schemaVersion": 36,
+      "version": 1,
+      "refresh": "30s",
+      "panels": [
+        {
+          "type": "stat",
+          "title": "Availability SLO (99%)",
+          "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 },
+          "targets": [
+            { "expr": "slo:ai_sre_agent:success_ratio", "legendFormat": "Success Ratio" }
+          ],
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "center",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }
+          }
+        },
+        {
+          "type": "stat",
+          "title": "Latency SLO (95% < 1.5s)",
+          "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 },
+          "targets": [
+            { "expr": "slo:ai_sre_agent:latency_95th", "legendFormat": "95th Percentile" }
+          ],
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "center",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }
+          }
+        },
+        {
+          "type": "stat",
+          "title": "Availability Error Budget Remaining",
+          "gridPos": { "x": 12, "y": 0, "w": 6, "h": 4 },
+          "targets": [
+            { "expr": "slo:ai_sre_agent:availability_error_budget_remaining", "legendFormat": "Error Budget" }
+          ],
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "center",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }
+          }
+        },
+        {
+          "type": "stat",
+          "title": "Latency Error Budget Remaining",
+          "gridPos": { "x": 18, "y": 0, "w": 6, "h": 4 },
+          "targets": [
+            { "expr": "slo:ai_sre_agent:latency_error_budget_remaining", "legendFormat": "Latency Budget" }
+          ],
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "center",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }
+          }
+        },
+        {
+          "type": "timeseries",
+          "title": "Success Ratio Over Time",
+          "gridPos": { "x": 0, "y": 4, "w": 12, "h": 8 },
+          "targets": [
+            { "expr": "slo:ai_sre_agent:success_ratio", "legendFormat": "Success Ratio" }
+          ]
+        },
+        {
+          "type": "timeseries",
+          "title": "Latency 95th Percentile Over Time",
+          "gridPos": { "x": 12, "y": 4, "w": 12, "h": 8 },
+          "targets": [
+            { "expr": "slo:ai_sre_agent:latency_95th", "legendFormat": "Latency 95th" }
+          ]
+        },
+        {
+          "type": "timeseries",
+          "title": "Availability Burn Rate (5m vs 30m)",
+          "gridPos": { "x": 0, "y": 12, "w": 12, "h": 8 },
+          "targets": [
+            { "expr": "slo:ai_sre_agent:availability_burnrate_5m", "legendFormat": "Burn Rate 5m" },
+            { "expr": "slo:ai_sre_agent:availability_burnrate_30m", "legendFormat": "Burn Rate 30m" }
+          ]
+        },
+        {
+          "type": "timeseries",
+          "title": "Latency Burn Rate (5m vs 30m)",
+          "gridPos": { "x": 12, "y": 12, "w": 12, "h": 8 },
+          "targets": [
+            { "expr": "slo:ai_sre_agent:latency_burnrate_5m", "legendFormat": "Burn Rate 5m" },
+            { "expr": "slo:ai_sre_agent:latency_burnrate_30m", "legendFormat": "Burn Rate 30m" }
+          ]
+        },
+        {
+          "type": "timeseries",
+          "title": "Job Volume (Requests Per Second)",
+          "gridPos": { "x": 0, "y": 20, "w": 12, "h": 8 },
+          "targets": [
+            { "expr": "sum(rate(jobs_processed_total{job_type=\"anomaly_scan\"}[5m]))", "legendFormat": "RPS" }
+          ]
+        },
+        {
+          "type": "timeseries",
+          "title": "Job Results Breakdown",
+          "gridPos": { "x": 12, "y": 20, "w": 12, "h": 8 },
+          "targets": [
+            { "expr": "sum(rate(jobs_processed_total{job_type=\"anomaly_scan\", result=\"success\"}[5m]))", "legendFormat": "Success" },
+            { "expr": "sum(rate(jobs_processed_total{job_type=\"anomaly_scan\", result=\"failure\"}[5m]))", "legendFormat": "Failure" }
+          ]
+        }
+      ]
+    }

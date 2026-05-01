@@ -1,0 +1,62 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: ai-sre-agent-slo-rules
+  namespace: observability
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+  - name: ai-sre-agent-slo
+    interval: 30s
+    rules:
+
+    # -----------------------------
+    # Availability SLO (99%)
+    # -----------------------------
+    - record: slo:ai_sre_agent:success_ratio
+      expr: |
+        sum(rate(jobs_processed_total{job_type="anomaly_scan", result="success"}[5m]))
+        /
+        sum(rate(jobs_processed_total{job_type="anomaly_scan"}[5m]))
+
+    - record: slo:ai_sre_agent:availability_error_budget_remaining
+      expr: |
+        1 - (1 - slo:ai_sre_agent:success_ratio) / (1 - 0.99)
+
+    # -----------------------------
+    # Latency SLO (95% under 1.5s)
+    # -----------------------------
+    - record: slo:ai_sre_agent:latency_95th
+      expr: |
+        histogram_quantile(
+          0.95,
+          sum(rate(job_duration_seconds_bucket{job_type="anomaly_scan"}[5m])) by (le)
+        )
+
+    - record: slo:ai_sre_agent:latency_slo_compliance
+      expr: |
+        slo:ai_sre_agent:latency_95th < 1.5
+
+    - record: slo:ai_sre_agent:latency_error_budget_remaining
+      expr: |
+        1 - ((slo:ai_sre_agent:latency_95th - 1.5 > 0) * (slo:ai_sre_agent:latency_95th - 1.5)) / 1.5
+
+    # -----------------------------
+    # Burn Rates (multi-window)
+    # -----------------------------
+    - record: slo:ai_sre_agent:availability_burnrate_5m
+      expr: |
+        (1 - slo:ai_sre_agent:success_ratio) / (1 - 0.99)
+
+    - record: slo:ai_sre_agent:availability_burnrate_30m
+      expr: |
+        (1 - slo:ai_sre_agent:success_ratio) / (1 - 0.99)
+
+    - record: slo:ai_sre_agent:latency_burnrate_5m
+      expr: |
+        ((slo:ai_sre_agent:latency_95th - 1.5 > 0) * (slo:ai_sre_agent:latency_95th - 1.5)) / 1.5
+
+    - record: slo:ai_sre_agent:latency_burnrate_30m
+      expr: |
+        ((slo:ai_sre_agent:latency_95th - 1.5 > 0) * (slo:ai_sre_agent:latency_95th - 1.5)) / 1.5

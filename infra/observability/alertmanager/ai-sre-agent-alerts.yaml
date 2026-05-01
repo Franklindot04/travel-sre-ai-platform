@@ -7,12 +7,36 @@ metadata:
     release: kube-prometheus-stack
 spec:
   route:
+    groupBy: ['alertname']
+    groupWait: 10s
+    groupInterval: 30s
+    repeatInterval: 2h
     receiver: ai-sre-slack
-    matchers:
-      - name: alertname
-        matchType: =~
-        value: "AISREAgent.*"
+    routes:
+
+      # -------------------------------------------------------
+      # Route ALL AISREAgent* alerts to the AI SRE Agent webhook
+      # -------------------------------------------------------
+      - matchers:
+          - name: alertname
+            matchType: =~
+            value: "AISREAgent.*"
+        receiver: ai-sre-agent-webhook
+
+      # -------------------------------------------------------
+      # Also send all AISREAgent* alerts to Slack
+      # -------------------------------------------------------
+      - matchers:
+          - name: alertname
+            matchType: =~
+            value: "AISREAgent.*"
+        receiver: ai-sre-slack
+
   receivers:
+
+    # -------------------------------------------------------
+    # Slack Receiver (existing)
+    # -------------------------------------------------------
     - name: ai-sre-slack
       slackConfigs:
         - channel: "#travel-sre-ai-platform-alerts"
@@ -20,3 +44,11 @@ spec:
           apiURL:
             name: ai-sre-slack
             key: webhook_url
+
+    # -------------------------------------------------------
+    # AI SRE Agent Webhook Receiver (NEW)
+    # -------------------------------------------------------
+    - name: ai-sre-agent-webhook
+      webhookConfigs:
+        - url: "http://ai-sre-agent.platform.svc.cluster.local:3005/remediate"
+          sendResolved: true

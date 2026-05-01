@@ -10,38 +10,88 @@ spec:
   - name: ai-sre-agent-slo-alerts
     rules:
 
+    # -------------------------------------------------------
+    # FAST BURN (Critical) — triggers immediate restart
+    # -------------------------------------------------------
+
     - alert: AISREAgentAvailabilityFastBurn
       expr: slo:ai_sre_agent:availability_burnrate_5m > 14
       for: 2m
       labels:
         severity: critical
+        remediation: restart
       annotations:
         summary: "AI SRE Agent availability SLO fast burn"
-        description: "Availability SLO is burning too fast (5m window)."
-
-    - alert: AISREAgentAvailabilitySlowBurn
-      expr: slo:ai_sre_agent:availability_burnrate_30m > 3
-      for: 10m
-      labels:
-        severity: warning
-      annotations:
-        summary: "AI SRE Agent availability SLO slow burn"
-        description: "Availability SLO is burning over 30m window."
+        description: "Availability SLO is burning too fast (5m window). Auto-remediation: restart."
 
     - alert: AISREAgentLatencyFastBurn
       expr: slo:ai_sre_agent:latency_burnrate_5m > 14
       for: 2m
       labels:
         severity: critical
+        remediation: restart
       annotations:
         summary: "AI SRE Agent latency SLO fast burn"
-        description: "Latency SLO is burning too fast (5m window)."
+        description: "Latency SLO is burning too fast (5m window). Auto-remediation: restart."
+
+    # -------------------------------------------------------
+    # SLOW BURN (Warning) — triggers scale to 2 replicas
+    # -------------------------------------------------------
+
+    - alert: AISREAgentAvailabilitySlowBurn
+      expr: slo:ai_sre_agent:availability_burnrate_30m > 3
+      for: 10m
+      labels:
+        severity: warning
+        remediation: scale_to_2
+      annotations:
+        summary: "AI SRE Agent availability SLO slow burn"
+        description: "Availability SLO is burning over 30m window. Auto-remediation: scale to 2 replicas."
 
     - alert: AISREAgentLatencySlowBurn
       expr: slo:ai_sre_agent:latency_burnrate_30m > 3
       for: 10m
       labels:
         severity: warning
+        remediation: scale_to_2
       annotations:
         summary: "AI SRE Agent latency SLO slow burn"
-        description: "Latency SLO is burning over 30m window."
+        description: "Latency SLO is burning over 30m window. Auto-remediation: scale to 2 replicas."
+
+    # -------------------------------------------------------
+    # PERSISTENT BURN (Critical) — triggers scale to 3 replicas
+    # -------------------------------------------------------
+
+    - alert: AISREAgentAvailabilityPersistentBurn
+      expr: slo:ai_sre_agent:availability_burnrate_30m > 3
+      for: 30m
+      labels:
+        severity: critical
+        remediation: scale_to_3
+      annotations:
+        summary: "AI SRE Agent availability SLO persistent burn"
+        description: "Availability SLO burn persists after scaling to 2. Auto-remediation: scale to 3 replicas."
+
+    - alert: AISREAgentLatencyPersistentBurn
+      expr: slo:ai_sre_agent:latency_burnrate_30m > 3
+      for: 30m
+      labels:
+        severity: critical
+        remediation: scale_to_3
+      annotations:
+        summary: "AI SRE Agent latency SLO persistent burn"
+        description: "Latency SLO burn persists after scaling to 2. Auto-remediation: scale to 3 replicas."
+
+    # -------------------------------------------------------
+    # LONG BURN (Escalation) — notify humans
+    # -------------------------------------------------------
+
+    - alert: AISREAgentLongBurn
+      expr: slo:ai_sre_agent:availability_burnrate_30m > 1
+      for: 2h
+      labels:
+        severity: critical
+        remediation: escalate
+      annotations:
+        summary: "AI SRE Agent long burn — human escalation required"
+        description: "SLO burn continues for 2h. Auto-remediation exhausted. Escalate to SRE team."

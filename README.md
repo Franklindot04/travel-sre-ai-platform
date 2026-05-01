@@ -1,160 +1,182 @@
-# 🚀 AI SRE Agent Platform
+# 🚀 AI SRE Agent Platform  
+### Kubernetes‑native, fully observable, self‑healing microservice platform
 
-Kubernetes‑native, fully observable, self‑monitoring microservice platform with Prometheus, Alertmanager, Grafana and Slack alerting.
-
-This project implements a production‑grade SRE (Site Reliability Engineering) platform designed to simulate real‑world reliability workflows:
-
-- Instrumented microservices  
-- Prometheus metrics  
-- Custom alert rules  
-- Alertmanager routing  
-- Slack notifications  
-- Grafana dashboards  
-- Kubernetes deployments  
-- GitOps‑friendly infra layout  
-
-It demonstrates how a modern SRE team builds, monitors and operates distributed systems.
+![Kubernetes](https://img.shields.io/badge/Kubernetes-Platform-blue?logo=kubernetes)
+![Prometheus](https://img.shields.io/badge/Monitoring-Prometheus-orange?logo=prometheus)
+![Grafana](https://img.shields.io/badge/Dashboards-Grafana-yellow?logo=grafana)
+![Slack](https://img.shields.io/badge/Alerts-Slack-purple?logo=slack)
+![TypeScript](https://img.shields.io/badge/Code-TypeScript-blue?logo=typescript)
+![Status](https://img.shields.io/badge/Status-Production--Ready-brightgreen)
 
 ---
 
-## 📌 Project Status
+# 📘 Overview
 
-**MVP Completed — Core SRE pipeline fully operational**
+The **AI SRE Agent Platform** is a cloud‑native, SRE‑focused demo environment that simulates a real production ecosystem:
 
-What works today:
+- Multiple microservices  
+- API gateway  
+- Full observability stack  
+- SLOs + burn‑rate alerts  
+- Slack alerting  
+- Auto‑remediation  
+- GitOps‑friendly dashboards  
+- Kubernetes‑native deployments  
 
-- AI SRE Agent worker service  
-- Metrics instrumentation  
-- Prometheus scraping  
-- PrometheusRule firing  
-- AlertmanagerConfig routing  
-- Slack integration  
-- Kubernetes deployments  
-- Grafana dashboards  
-- End‑to‑end alert delivery  
-
-What’s next:
-
-- SLO dashboards  
-- Error budget burn alerts  
-- Auto‑remediation hooks  
-- Log aggregation with Loki  
-- CI/CD pipeline  
-- GitOps deployment  
+It is designed to demonstrate **how modern SRE teams build, monitor, and operate distributed systems**.
 
 ---
 
-## 🧠 Architecture Overview
+# 🧠 High‑Level Architecture
 
-```text
-┌───────────────────────────────┐
-│ AI SRE Agent Worker           │
-│ (TypeScript microservice)     │
-└───────────────────────────────┘
-           │ emits metrics
-           ▼
-┌───────────────────────────────┐
-│ Prometheus                    │
-│ (scrapes /metrics)            │
-└───────────────────────────────┘
-           │ triggers alerts
-           ▼
-┌───────────────────────────────┐
-│ Alertmanager                  │
-│ (routes alerts)               │
-└───────────────────────────────┘
-           │ Slack webhook
-           ▼
-┌───────────────────────────────┐
-│ Slack Notifications           │
-│ #travel-sre-ai-platform       │
-└───────────────────────────────┘
+```mermaid
+flowchart TD
 
-Grafana dashboards visualize:
-- worker success/failure rate
-- job duration
-- platform overview
+    A[Client / User] --> B[API Gateway]
+
+    B --> S1[Search Service]
+    B --> B1[Booking Service]
+    B --> I1[Inventory Service]
+    B --> P1[Payment Service]
+
+    subgraph SRE[AI SRE Agent]
+        W1[Worker Loop<br/>Anomaly Scan Jobs]
+        W2[/metrics<br/>/health<br/>/remediate]
+    end
+
+    subgraph OBS[Observability Stack]
+        P[Prometheus]
+        AM[Alertmanager]
+        G[Grafana]
+        L[Loki]
+        PT[Promtail]
+    end
+
+    %% Metrics
+    S1 -->|ServiceMonitor| P
+    B1 -->|ServiceMonitor| P
+    I1 -->|ServiceMonitor| P
+    P1 -->|ServiceMonitor| P
+    W2 -->|ServiceMonitor| P
+
+    %% Logs
+    S1 --> PT --> L
+    B1 --> PT --> L
+    I1 --> PT --> L
+    P1 --> PT --> L
+    W1 --> PT --> L
+
+    %% Alerts
+    P -->|SLO Burn‑Rate Alerts| AM
+    AM -->|Slack Alerts| SL[Slack Channel]
+    AM -->|Webhook /remediate| W2
+
+    %% Auto‑Remediation
+    W2 -->|Restart / Scale| K8S[(Kubernetes API)]
 ```
 
 ---
 
-## 🛠️ Core Features
+# 🔥 Key Features
 
-### 1. AI SRE Agent Worker
+## ✅ 1. Multi‑Service Kubernetes Platform  
+Includes:
 
-A TypeScript microservice that simulates job processing:
-
-- Random success/failure  
-- Metrics for job count & duration  
-- Slack notifications on failure  
-- Configurable job type  
-- 30‑second loop  
-
-Metrics exposed:
-
-- `jobs_processed_total{job_type, result}`  
-- `job_duration_seconds{job_type, result}`  
-
----
-
-### 2. Prometheus Integration
-
-Prometheus scrapes the worker via a `ServiceMonitor`.
-
-Custom alert rules included:
-
-- High failure rate  
-- Consecutive failures  
-- Job duration anomalies  
-
----
-
-### 3. Alertmanager + Slack Routing
-
-AlertmanagerConfig defines:
-
-- Slack receiver  
-- AISREAgent route  
-- Matchers for job types  
-- Templates for formatting  
-
-Example Slack alert:
-
-```text
-❗ AI SRE Agent Failure
-Job Type: anomaly_scan
-Duration: 1.52s
-```
-
----
-
-### 4. Grafana Dashboards
-
-Dashboards included:
-
-- AI SRE Agent dashboard  
-- Platform overview  
-- Service template dashboard  
-- API gateway dashboard  
-
-All dashboards are stored as ConfigMaps (GitOps‑friendly).
-
----
-
-### 5. Kubernetes Manifests
+- API Gateway  
+- Booking Service  
+- Inventory Service  
+- Payment Service  
+- Search Service  
+- AI SRE Agent  
 
 Each service includes:
 
 - Deployment  
 - Service  
 - ServiceMonitor  
+- Dockerfile  
+- TypeScript code  
 
-Infra includes:
+---
 
-- Namespaces  
-- Observability stack configs  
-- Alert rules  
-- Dashboards  
+## ✅ 2. Full Observability Stack
+
+### **Prometheus**
+- Scrapes all services  
+- Evaluates SLO recording rules  
+- Computes burn‑rates  
+
+### **Alertmanager**
+- Routes alerts to:
+  - Slack  
+  - AI SRE Agent `/remediate` webhook  
+
+### **Grafana**
+Dashboards included:
+
+- Platform Overview  
+- AI SRE Agent Dashboard  
+- AI SRE Agent SLO Dashboard  
+- Per‑service dashboards  
+
+### **Loki + Promtail**
+- Centralized logs  
+- Queryable in Grafana  
+
+---
+
+# 🎯 SLOs & Error Budgets
+
+The AI SRE Agent has two SLOs:
+
+### **Availability SLO**
+- 99% success rate  
+- Based on `jobs_processed_total`  
+
+### **Latency SLO**
+- 95% of jobs under **1.5s**  
+- Based on `job_duration_seconds_bucket`  
+
+### **Burn‑Rate Alerts**
+Multi‑window burn‑rates:
+
+| Window | Threshold | Purpose |
+|--------|-----------|---------|
+| 5m     | > 14×     | Fast burn (restart) |
+| 30m    | > 3×      | Slow burn (scale to 2) |
+| 30m    | > 3× for 30m | Persistent burn (scale to 3) |
+| 2h     | > 1×      | Human escalation |
+
+---
+
+# 🤖 Auto‑Remediation Engine
+
+The AI SRE Agent exposes:
+
+```
+/health
+/metrics
+/remediate
+```
+
+Alertmanager POSTs alerts to `/remediate`.
+
+### Remediation actions:
+
+| Burn Type | Action |
+|-----------|--------|
+| Fast burn | Restart deployment |
+| Slow burn | Scale to 2 replicas |
+| Persistent burn | Scale to 3 replicas |
+| Long burn | Human escalation |
+
+### Slack notifications example:
+
+```
+⚠️ Sustained burn — scaling ai-sre-agent to 2 replicas
+🔥 Persistent burn — scaling ai-sre-agent to 3 replicas
+🚨 Long burn — human intervention required
+```
 
 ---
 
@@ -162,13 +184,16 @@ Infra includes:
 
 ```text
 .
-├── .gitignore
 ├── README.md
 ├── docs
 │   ├── apis.md
-│   └── architecture.md
+│   ├── architecture-diagram.md
+│   ├── architecture.md
+│   ├── auto-remediation.md
+│   ├── platform-overview.md
+│   └── slo.md
 ├── infra
-│   ├── helm                      # Reserved for future Helm charts
+│   ├── helm
 │   ├── k8s
 │   │   ├── namespaces
 │   │   │   └── platform.yaml
@@ -201,24 +226,30 @@ Infra includes:
 │       ├── alertmanager
 │       │   └── ai-sre-agent-alerts.yaml
 │       ├── grafana-dashboards
-│       │   ├── ai-sre-agent-dashboard.yaml
-│       │   ├── api-gateway.json
-│       │   ├── platform-overview-configmap.yaml
-│       │   ├── platform-overview.json
-│       │   ├── service-template-configmap.yaml
-│       │   └── service-template.json
+│       │   ├── json
+│       │   │   ├── ai-sre-agent-slo-dashboard.json
+│       │   │   ├── api-gateway.json
+│       │   │   ├── platform-overview.json
+│       │   │   └── service-template.json
+│       │   └── yaml
+│       │       ├── ai-sre-agent-dashboard.yaml
+│       │       ├── ai-sre-agent-slo-dashboard-configmap.yaml
+│       │       ├── platform-overview-configmap.yaml
+│       │       └── service-template-configmap.yaml
 │       ├── loki-values.yaml
 │       ├── prometheus-rules
-│       │   └── ai-sre-agent-rules.yaml
+│       │   ├── ai-sre-agent-rules.yaml
+│       │   ├── ai-sre-agent-slo-alerts.yaml
+│       │   └── ai-sre-agent-slo-rules.yaml
 │       ├── prometheus-values.yaml
 │       └── promtail-values.yaml
-├── scripts                        # Reserved for future automation/CI scripts
+├── scripts
 ├── services
 │   ├── _template
 │   │   ├── package.json
 │   │   ├── src
 │   │   │   └── index.ts
-│   │   ├── tests                  # Placeholder for future tests
+│   │   ├── tests
 │   │   └── tsconfig.json
 │   ├── ai-sre-agent
 │   │   ├── Dockerfile
@@ -226,10 +257,11 @@ Infra includes:
 │   │   ├── package.json
 │   │   ├── src
 │   │   │   ├── index.ts
+│   │   │   ├── remediation.ts
 │   │   │   ├── slack.ts
 │   │   │   ├── worker-metrics.ts
 │   │   │   └── worker.ts
-│   │   ├── tests                  # Placeholder for future tests
+│   │   ├── tests
 │   │   └── tsconfig.json
 │   ├── api-gateway
 │   │   ├── Dockerfile
@@ -237,7 +269,7 @@ Infra includes:
 │   │   ├── package.json
 │   │   ├── src
 │   │   │   └── index.ts
-│   │   ├── tests                  # Placeholder for future tests
+│   │   ├── tests
 │   │   └── tsconfig.json
 │   ├── booking-service
 │   │   ├── Dockerfile
@@ -245,7 +277,7 @@ Infra includes:
 │   │   ├── package.json
 │   │   ├── src
 │   │   │   └── index.ts
-│   │   ├── tests                  # Placeholder for future tests
+│   │   ├── tests
 │   │   └── tsconfig.json
 │   ├── inventory-service
 │   │   ├── Dockerfile
@@ -253,7 +285,7 @@ Infra includes:
 │   │   ├── package.json
 │   │   ├── src
 │   │   │   └── index.ts
-│   │   ├── tests                  # Placeholder for future tests
+│   │   ├── tests
 │   │   └── tsconfig.json
 │   ├── payment-service
 │   │   ├── Dockerfile
@@ -261,7 +293,7 @@ Infra includes:
 │   │   ├── package.json
 │   │   ├── src
 │   │   │   └── index.ts
-│   │   ├── tests                  # Placeholder for future tests
+│   │   ├── tests
 │   │   └── tsconfig.json
 │   └── search-service
 │       ├── Dockerfile
@@ -269,7 +301,7 @@ Infra includes:
 │       ├── package.json
 │       ├── src
 │       │   └── index.ts
-│       ├── tests                  # Placeholder for future tests
+│       ├── tests
 │       └── tsconfig.json
 └── shared
     ├── config.ts
@@ -279,106 +311,87 @@ Infra includes:
     └── types.d.ts
 ```
 
-Empty directories like `helm`, `scripts`, and `tests` are intentionally kept as placeholders for future Helm charts, automation scripts and test suites.
+---
+
+# 🧪 What’s Fully Implemented
+
+- ✔ AI SRE Agent worker  
+- ✔ Metrics instrumentation  
+- ✔ Prometheus scraping  
+- ✔ SLO recording rules  
+- ✔ Burn‑rate alerts  
+- ✔ Alertmanager routing  
+- ✔ Slack notifications  
+- ✔ Auto‑remediation (restart + scale)  
+- ✔ Grafana dashboards  
+- ✔ Loki + Promtail logging  
+- ✔ GitOps‑friendly dashboards  
 
 ---
 
-## 🧪 What Has Been Achieved So Far
-
-- Fully working SRE alerting pipeline  
-- Worker emits metrics correctly  
-- Prometheus scrapes metrics  
-- PrometheusRule fires alerts  
-- Alertmanager merges AlertmanagerConfig  
-- Slack receives alerts  
-- Kubernetes manifests are clean and reproducible  
-- Repo is clean, professional and GitHub‑ready  
-
----
-
-## 🔮 Planned Improvements (Roadmap)
+# 🔮 Roadmap
 
 ### Short‑Term
-
-- Add SLO dashboards (availability, latency, error budget)  
-- Add burn‑rate alerts (multi‑window, multi‑burn)  
-- Add log aggregation with Loki + Promtail  
-- Add rate‑limiting to Slack alerts  
-- Add alert grouping to reduce noise  
+- Rate‑limited remediation  
+- Cooldown windows  
+- Canary remediation  
+- Synthetic monitoring  
 
 ### Medium‑Term
-
-- Auto‑remediation:  
-  - Restart worker on failure spikes  
-  - Clear queue  
-  - Notify Slack  
-  - Escalate if unresolved  
+- CI/CD pipeline  
+- GitOps with ArgoCD  
+- Load testing + chaos engineering  
 
 ### Long‑Term
-
-- GitOps with ArgoCD or Flux  
-- CI/CD pipeline (GitHub Actions)  
-- Canary deployments  
-- Load testing + chaos engineering  
 - Multi‑cluster federation  
+- Predictive scaling  
 
 ---
 
-## 🏁 How to Deploy
+# 🚀 Deployment
 
 ### 1. Apply namespaces
-
 ```bash
 kubectl apply -f infra/k8s/namespaces
 ```
 
 ### 2. Deploy platform services
-
 ```bash
 kubectl apply -f infra/k8s/platform
 ```
 
-### 3. Deploy observability components
-
+### 3. Deploy observability stack
 ```bash
 kubectl apply -f infra/observability
 ```
 
 ### 4. Deploy AI SRE Agent
-
 ```bash
 kubectl apply -f infra/k8s/platform/ai-sre-agent
 ```
 
 ---
 
-## 📣 Example Slack Alert
-
-```text
-❗ AI SRE Agent Failure
-Job Type: anomaly_scan
-Duration: 1.63s
-```
-
----
-
-## 🧑‍💻 Author
+# 👤 Author
 
 **Franklin Ajero**  
 Senior SRE / DevOps Engineer  
+Kubernetes • Observability • Reliability Engineering  
 
 ---
 
-## ⭐ Why This Project Matters
+# ⭐ Why This Project Matters
 
-This project demonstrates real‑world SRE engineering:
+This platform demonstrates **real‑world SRE engineering**:
 
 - Metrics  
+- SLOs  
+- Burn‑rates  
 - Alerting  
 - Dashboards  
+- Auto‑remediation  
 - Kubernetes  
 - Observability  
-- Automation  
 
-It’s a portfolio‑grade example of how to design, instrument and operate a modern, observable platform.
+It is a **portfolio‑grade**, **interview‑ready**, **production‑style** SRE platform.
 

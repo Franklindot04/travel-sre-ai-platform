@@ -10,52 +10,43 @@ AI SRE Agent auto‑remediation loop.
 
 ```mermaid
 flowchart TD
+A[Client / User] --> B[API Gateway]
 
-    %% Clients
-    A[Client / User] --> B[API Gateway]
+B --> S1[Search Service]
+B --> B1[Booking Service]
+B --> I1[Inventory Service]
+B --> P1[Payment Service]
 
-    %% API Gateway routes
-    B --> C1[Search Service]
-    B --> C2[Booking Service]
-    B --> C3[Inventory Service]
-    B --> C4[Payment Service]
+subgraph SRE[AI SRE Agent]
+W1[Worker Loop]
+W2[Agent Endpoints]
+end
 
-    %% AI SRE Agent
-    subgraph SRE[AI SRE Agent]
-        S1[Worker Loop<br/>Anomaly Scan Jobs]
-        S2[/metrics<br/>/health<br/>/remediate]
-    end
+subgraph OBS[Observability Stack]
+P[Prometheus]
+AM[Alertmanager]
+G[Grafana]
+L[Loki]
+PT[Promtail]
+end
 
-    %% Observability Stack
-    subgraph OBS[Observability Stack]
-        P[Prometheus]
-        AM[Alertmanager]
-        G[Grafana]
-        L[Loki]
-        PT[Promtail]
-    end
+S1 -->|ServiceMonitor| P
+B1 -->|ServiceMonitor| P
+I1 -->|ServiceMonitor| P
+P1 -->|ServiceMonitor| P
+W2 -->|ServiceMonitor| P
 
-    %% Metrics flow
-    C1 -->|ServiceMonitor| P
-    C2 -->|ServiceMonitor| P
-    C3 -->|ServiceMonitor| P
-    C4 -->|ServiceMonitor| P
-    S2 -->|ServiceMonitor| P
+S1 --> PT --> L
+B1 --> PT --> L
+I1 --> PT --> L
+P1 --> PT --> L
+W1 --> PT --> L
 
-    %% Logs
-    C1 --> PT --> L
-    C2 --> PT --> L
-    C3 --> PT --> L
-    C4 --> PT --> L
-    S1 --> PT --> L
+P -->|SLO Burn‑Rate Alerts| AM
+AM -->|Slack Alerts| SL[Slack]
+AM -->|Webhook| W2
 
-    %% Alerts
-    P -->|SLO Burn‑Rate Alerts| AM
-    AM -->|Slack Alerts| SL[Slack Channel]
-    AM -->|Webhook /remediate| S2
-
-    %% Auto‑Remediation Loop
-    S2 -->|Restart / Scale| K8S[(Kubernetes API)]
+W2 -->|Restart / Scale| K8S[(Kubernetes API)]
 ```
 
 ---

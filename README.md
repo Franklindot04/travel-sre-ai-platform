@@ -31,51 +31,45 @@ It is designed to demonstrate **how modern SRE teams build, monitor, and operate
 
 ```mermaid
 flowchart TD
+A[Client / User] --> B[API Gateway]
+B --> S1[Search Service]
+B --> B1[Booking Service]
+B --> I1[Inventory Service]
+B --> P1[Payment Service]
 
-    A[Client / User] --> B[API Gateway]
-
-    B --> S1[Search Service]
-    B --> B1[Booking Service]
-    B --> I1[Inventory Service]
-    B --> P1[Payment Service]
-
-    subgraph SRE[AI SRE Agent]
-        W1["Worker Loop
+subgraph SRE[AI SRE Agent]
+W1["Worker Loop
 Anomaly Scan Jobs"]
-        W2["/metrics
+W2["/metrics
 /health
 /remediate"]
-    end
+end
 
-    subgraph OBS[Observability Stack]
-        P[Prometheus]
-        AM[Alertmanager]
-        G[Grafana]
-        L[Loki]
-        PT[Promtail]
-    end
+subgraph OBS[Observability Stack]
+P[Prometheus]
+AM[Alertmanager]
+G[Grafana]
+L[Loki]
+PT[Promtail]
+end
 
-    %% Metrics
-    S1 -->|ServiceMonitor| P
-    B1 -->|ServiceMonitor| P
-    I1 -->|ServiceMonitor| P
-    P1 -->|ServiceMonitor| P
-    W2 -->|ServiceMonitor| P
+S1 -->|ServiceMonitor| P
+B1 -->|ServiceMonitor| P
+I1 -->|ServiceMonitor| P
+P1 -->|ServiceMonitor| P
+W2 -->|ServiceMonitor| P
 
-    %% Logs
-    S1 --> PT --> L
-    B1 --> PT --> L
-    I1 --> PT --> L
-    P1 --> PT --> L
-    W1 --> PT --> L
+S1 --> PT --> L
+B1 --> PT --> L
+I1 --> PT --> L
+P1 --> PT --> L
+W1 --> PT --> L
 
-    %% Alerts
-    P -->|SLO Burn‑Rate Alerts| AM
-    AM -->|Slack Alerts| SL[Slack Channel]
-    AM -->|Webhook /remediate| W2
+P -->|SLO Burn‑Rate Alerts| AM
+AM -->|Slack Alerts| SL[Slack Channel]
+AM -->|Webhook /remediate| W2
 
-    %% Auto‑Remediation
-    W2 -->|Restart / Scale| K8S[(Kubernetes API)]
+W2 -->|Restart / Scale| K8S[(Kubernetes API)]
 ```
 
 ---

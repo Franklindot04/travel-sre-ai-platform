@@ -1,0 +1,67 @@
+name: CD - Update Manifests (Hybrid GitOps)
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "services/**"
+      - ".github/workflows/ci-build-images.yaml"
+
+jobs:
+  update-manifests:
+    name: Update K8s Manifests with New Image Tags
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    env:
+      REGISTRY: ghcr.io
+      OWNER: ${{ github.repository_owner }}
+      SHA_TAG: ${{ github.sha }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install yq
+        run: |
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v4.44.3/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+
+      - name: Update deployment images
+        run: |
+          declare -A MAP
+          MAP[ai-sre-agent]="ai-sre-agent"
+          MAP[api-gateway]="api-gateway"
+          MAP[booking-service]="booking-service"
+          MAP[inventory-service]="inventory-service"
+          MAP[payment-service]="payment-service"
+          MAP[search-service]="search-service"
+
+          for svc in "${!MAP[@]}"; do
+            DEPLOY_FILE="infra/k8s/platform/${svc}/deployment.yaml"
+            if [ -f "$DEPLOY_FILE" ]; then
+              echo "Updating image for $svc in $DEPLOY_FILE"
+              yq -i '
+                (.spec.template.spec.containers[] | select(.name == "'"$svc"'") | .image) =
+                "'"$REGISTRY"'/'"$OWNER"'/'"${MAP[$svc]}"':'"$SHA_TAG"'"
+              ' "$DEPLOY_FILE"
+            else
+              echo "Skipping $svc, no deployment file at $DEPLOY_FILE"
+            fi
+          done
+
+      - name: Commit and push changes
+        run: |
+          if git status --porcelain | grep -q infra/k8s/platform; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add infra/k8s/platform
+            git commit -m "chore: update deployment images to ${SHA_TAG}"
+            git push origin main
+          else
+            echo "No manifest changes to commit."
+          fi

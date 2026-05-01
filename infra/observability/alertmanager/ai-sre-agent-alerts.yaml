@@ -1,0 +1,22 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: ai-sre-agent-alerts
+  namespace: observability
+  labels:
+    release: kube-prometheus-stack
+spec:
+  route:
+    receiver: ai-sre-slack
+    matchers:
+      - name: alertname
+        matchType: =~
+        value: "AISREAgent.*"
+  receivers:
+    - name: ai-sre-slack
+      slackConfigs:
+        - channel: "#travel-sre-ai-platform-alerts"
+          sendResolved: true
+          apiURL:
+            name: ai-sre-slack
+            key: webhook_url

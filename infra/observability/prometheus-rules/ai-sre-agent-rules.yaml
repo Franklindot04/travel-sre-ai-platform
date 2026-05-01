@@ -1,0 +1,46 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: ai-sre-agent-rules
+  namespace: observability
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: ai-sre-agent.rules
+      rules:
+        - alert: AISREAgentHighFailureRate
+          expr: |
+            (
+              rate(ai_sre_jobs_processed_total{result="failure"}[5m])
+              /
+              rate(ai_sre_jobs_processed_total[5m])
+            ) > 0.3
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "AI SRE Agent failure rate is high"
+            description: "More than 30% of jobs failed in the last 5 minutes."
+
+        - alert: AISREAgentJobDurationHigh
+          expr: |
+            rate(ai_sre_job_duration_seconds_sum[5m])
+            /
+            rate(ai_sre_job_duration_seconds_count[5m]) > 3
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "AI SRE Agent job duration is high"
+            description: "Average job duration exceeded 3 seconds."
+
+        - alert: AISREAgentDown
+          expr: |
+            kube_deployment_status_replicas_available{deployment="ai-sre-agent"} < 1
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: "AI SRE Agent is down"
+            description: "No running replicas detected."

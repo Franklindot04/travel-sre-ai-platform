@@ -1,0 +1,12 @@
+loki:
+  auth_enabled: false
+
+singleBinary:
+  enabled: true
+  replicas: 1
+
+persistence:
+  enabled: false
+
+lokiCanary:
+  enabled: false

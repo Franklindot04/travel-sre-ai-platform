@@ -1,0 +1,120 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ai-sre-agent-dashboard
+  namespace: observability
+  labels:
+    grafana_dashboard: "1"
+data:
+  ai-sre-agent-dashboard.json: |
+    {
+      "id": null,
+      "uid": "ai-sre-agent",
+      "title": "AI SRE Agent – Worker Overview",
+      "tags": ["sre", "ai", "worker"],
+      "timezone": "browser",
+      "schemaVersion": 36,
+      "version": 1,
+      "refresh": "10s",
+      "panels": [
+        {
+          "type": "stat",
+          "title": "Jobs Processed (Total)",
+          "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 },
+          "targets": [
+            {
+              "expr": "sum(ai_sre_jobs_processed_total)",
+              "legendFormat": "Total Jobs"
+            }
+          ]
+        },
+        {
+          "type": "stat",
+          "title": "Jobs Processed (Success)",
+          "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 },
+          "targets": [
+            {
+              "expr": "sum(ai_sre_jobs_processed_total{result=\"success\"})",
+              "legendFormat": "Success"
+            }
+          ]
+        },
+        {
+          "type": "stat",
+          "title": "Jobs Processed (Failure)",
+          "gridPos": { "x": 12, "y": 0, "w": 6, "h": 4 },
+          "targets": [
+            {
+              "expr": "sum(ai_sre_jobs_processed_total{result=\"failure\"})",
+              "legendFormat": "Failure"
+            }
+          ]
+        },
+        {
+          "type": "graph",
+          "title": "Job Duration (Histogram)",
+          "gridPos": { "x": 0, "y": 4, "w": 12, "h": 8 },
+          "targets": [
+            {
+              "expr": "rate(ai_sre_job_duration_seconds_bucket[5m])",
+              "legendFormat": "{{le}}"
+            }
+          ]
+        },
+        {
+          "type": "graph",
+          "title": "Job Duration (Avg)",
+          "gridPos": { "x": 12, "y": 4, "w": 12, "h": 8 },
+          "targets": [
+            {
+              "expr": "rate(ai_sre_job_duration_seconds_sum[5m]) / rate(ai_sre_job_duration_seconds_count[5m])",
+              "legendFormat": "avg duration"
+            }
+          ]
+        },
+        {
+          "type": "graph",
+          "title": "Worker CPU Usage",
+          "gridPos": { "x": 0, "y": 12, "w": 12, "h": 8 },
+          "targets": [
+            {
+              "expr": "rate(container_cpu_usage_seconds_total{pod=~\"ai-sre-agent.*\"}[5m])",
+              "legendFormat": "CPU"
+            }
+          ]
+        },
+        {
+          "type": "graph",
+          "title": "Worker Memory Usage",
+          "gridPos": { "x": 12, "y": 12, "w": 12, "h": 8 },
+          "targets": [
+            {
+              "expr": "container_memory_working_set_bytes{pod=~\"ai-sre-agent.*\"}",
+              "legendFormat": "Memory"
+            }
+          ]
+        },
+        {
+          "type": "graph",
+          "title": "Event Loop Lag",
+          "gridPos": { "x": 0, "y": 20, "w": 12, "h": 8 },
+          "targets": [
+            {
+              "expr": "nodejs_eventloop_lag_seconds",
+              "legendFormat": "lag"
+            }
+          ]
+        },
+        {
+          "type": "stat",
+          "title": "Pod Restarts",
+          "gridPos": { "x": 12, "y": 20, "w": 12, "h": 8 },
+          "targets": [
+            {
+              "expr": "sum(kube_pod_container_status_restarts_total{pod=~\"ai-sre-agent.*\"})",
+              "legendFormat": "restarts"
+            }
+          ]
+        }
+      ]
+    }

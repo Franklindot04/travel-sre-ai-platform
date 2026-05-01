@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: ai-sre-agent
-          image: ai-sre-agent:latest
+          image: ghcr.io/Franklindot04/ai-sre-agent:1bd250b2f066753b83d2bd56a95f71d9f4774ca6
           imagePullPolicy: Always
           ports:
             - containerPort: 3005

@@ -13,7 +13,7 @@ This project implements a production‑grade SRE (Site Reliability Engineering) 
 - Kubernetes deployments  
 - GitOps‑friendly infra layout  
 
-It demonstrates how a modern SRE team builds, monitors, and operates distributed systems.
+It demonstrates how a modern SRE team builds, monitors and operates distributed systems.
 
 ---
 
@@ -279,7 +279,7 @@ Infra includes:
     └── types.d.ts
 ```
 
-Empty directories like `helm`, `scripts`, and `tests` are intentionally kept as placeholders for future Helm charts, automation scripts, and test suites.
+Empty directories like `helm`, `scripts`, and `tests` are intentionally kept as placeholders for future Helm charts, automation scripts and test suites.
 
 ---
 

@@ -292,7 +292,7 @@ Empty directories like `helm`, `scripts`, and `tests` are intentionally kept as 
 - Alertmanager merges AlertmanagerConfig  
 - Slack receives alerts  
 - Kubernetes manifests are clean and reproducible  
-- Repo is clean, professional, and GitHub‑ready  
+- Repo is clean, professional and GitHub‑ready  
 
 ---
 
@@ -380,5 +380,5 @@ This project demonstrates real‑world SRE engineering:
 - Observability  
 - Automation  
 
-It’s a portfolio‑grade example of how to design, instrument, and operate a modern, observable platform.
+It’s a portfolio‑grade example of how to design, instrument and operate a modern, observable platform.
 

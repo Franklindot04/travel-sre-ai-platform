@@ -47,28 +47,28 @@ What’s next:
 ## 🧠 Architecture Overview
 
 ```text
-┌──────────────────────────┐
-│   AI SRE Agent Worker    │
-│  (TypeScript microservice)│
-└───────────────┬──────────┘
-                │ emits metrics
-                ▼
-        ┌──────────────────┐
-        │   Prometheus     │
-        │  (scrapes /metrics)
-        └───────┬──────────┘
-                │ triggers alerts
-                ▼
-       ┌────────────────────┐
-       │   Alertmanager     │
-       │  (routes alerts)   │
-       └───────┬────────────┘
-               │ Slack webhook
-               ▼
-     ┌────────────────────────┐
-     │   Slack Notifications   │
-     │ #travel-sre-ai-platform │
-     └────────────────────────┘
+┌───────────────────────────────┐
+│ AI SRE Agent Worker           │
+│ (TypeScript microservice)     │
+└───────────────────────────────┘
+           │ emits metrics
+           ▼
+┌───────────────────────────────┐
+│ Prometheus                    │
+│ (scrapes /metrics)            │
+└───────────────────────────────┘
+           │ triggers alerts
+           ▼
+┌───────────────────────────────┐
+│ Alertmanager                  │
+│ (routes alerts)               │
+└───────────────────────────────┘
+           │ Slack webhook
+           ▼
+┌───────────────────────────────┐
+│ Slack Notifications           │
+│ #travel-sre-ai-platform       │
+└───────────────────────────────┘
 
 Grafana dashboards visualize:
 - worker success/failure rate

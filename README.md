@@ -1,6 +1,6 @@
 # 🚀 AI SRE Agent Platform
 
-Kubernetes‑native, fully observable, self‑monitoring microservice platform with Prometheus, Alertmanager, Grafana, and Slack alerting.
+Kubernetes‑native, fully observable, self‑monitoring microservice platform with Prometheus, Alertmanager, Grafana and Slack alerting.
 
 This project implements a production‑grade SRE (Site Reliability Engineering) platform designed to simulate real‑world reliability workflows:
 

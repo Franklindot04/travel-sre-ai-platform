@@ -1,0 +1,58 @@
+name: Promotion - Manual Environment Promotion
+
+on:
+  push:
+    branches:
+      - dev
+      - develop
+      - preprod
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine promotion target
+        id: vars
+        run: |
+          BRANCH="${GITHUB_REF#refs/heads/}"
+
+          if [ "$BRANCH" = "dev" ]; then
+            TARGET="develop"
+          elif [ "$BRANCH" = "develop" ]; then
+            TARGET="preprod"
+          elif [ "$BRANCH" = "preprod" ]; then
+            TARGET="main"
+          else
+            echo "No promotion target for branch: $BRANCH"
+            exit 1
+          fi
+
+          echo "source=$BRANCH" >> $GITHUB_OUTPUT
+          echo "target=$TARGET" >> $GITHUB_OUTPUT
+
+      - name: Create promotion pull request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: "Promotion: ${{ steps.vars.outputs.source }} → ${{ steps.vars.outputs.target }}"
+          body: |
+            ### Manual Promotion Required
+
+            This PR promotes **${{ steps.vars.outputs.source }}** → **${{ steps.vars.outputs.target }}**.
+
+            After merging:
+            - CD workflow will update deployment manifests
+            - ArgoCD will sync the target environment automatically
+
+            Approve and merge when ready.
+          base: ${{ steps.vars.outputs.target }}
+          branch: promotion/${{ steps.vars.outputs.source }}-to-${{ steps.vars.outputs.target }}
+          labels: |
+            promotion
+            manual-approval

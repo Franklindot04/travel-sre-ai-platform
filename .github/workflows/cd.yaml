@@ -1,0 +1,48 @@
+name: CD - Update Deployment Manifests
+
+on:
+  push:
+    branches:
+      - dev
+      - develop
+      - preprod
+      - main
+
+jobs:
+  update-manifests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set variables
+        id: vars
+        run: |
+          BRANCH="${GITHUB_REF#refs/heads/}"
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+
+          VERSION="v$(date +'%Y%m%d-%H%M')-${GITHUB_SHA::7}"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Update image tags in all service deployments
+        run: |
+          VERSION="${{ steps.vars.outputs.version }}"
+
+          for FILE in infra/k8s/platform/*/deployment.yaml; do
+            echo "Updating $FILE"
+            sed -i "s|image: .*|image: franklin/$(basename $(dirname $FILE)):$VERSION|g" "$FILE"
+          done
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git add infra/k8s/platform/*/deployment.yaml
+
+          git commit -m "CD: update deployment images to ${{ steps.vars.outputs.version }}" || echo "No changes to commit"
+
+          git push origin HEAD:${{ steps.vars.outputs.branch }}

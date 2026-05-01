@@ -40,8 +40,11 @@ flowchart TD
     B --> P1[Payment Service]
 
     subgraph SRE[AI SRE Agent]
-        W1[Worker Loop<br/>Anomaly Scan Jobs]
-        W2[/metrics<br/>/health<br/>/remediate]
+        W1["Worker Loop
+Anomaly Scan Jobs"]
+        W2["/metrics
+/health
+/remediate"]
     end
 
     subgraph OBS[Observability Stack]

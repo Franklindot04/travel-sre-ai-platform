@@ -32,17 +32,15 @@ It is designed to demonstrate **how modern SRE teams build, monitor, and operate
 ```mermaid
 flowchart TD
 A[Client / User] --> B[API Gateway]
+
 B --> S1[Search Service]
 B --> B1[Booking Service]
 B --> I1[Inventory Service]
 B --> P1[Payment Service]
 
 subgraph SRE[AI SRE Agent]
-W1["Worker Loop
-Anomaly Scan Jobs"]
-W2["/metrics
-/health
-/remediate"]
+W1[Worker Loop]
+W2[Agent Endpoints]
 end
 
 subgraph OBS[Observability Stack]
@@ -66,8 +64,8 @@ P1 --> PT --> L
 W1 --> PT --> L
 
 P -->|SLO Burn‑Rate Alerts| AM
-AM -->|Slack Alerts| SL[Slack Channel]
-AM -->|Webhook /remediate| W2
+AM -->|Slack Alerts| SL[Slack]
+AM -->|Webhook| W2
 
 W2 -->|Restart / Scale| K8S[(Kubernetes API)]
 ```

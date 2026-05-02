@@ -32,10 +32,13 @@ jobs:
       - name: Update image tags in all service deployments
         run: |
           VERSION="${{ steps.vars.outputs.version }}"
+          OWNER_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+
           for FILE in infra/k8s/platform/*/deployment.yaml; do
             echo "Updating $FILE"
             SERVICE=$(basename $(dirname "$FILE"))
-            sed -i "s|image: .*|image: franklin/${SERVICE}:$VERSION|g" "$FILE"
+
+            sed -i "s|image: .*|image: ghcr.io/${OWNER_LOWER}/${SERVICE}:${VERSION}|g" "$FILE"
           done
 
       - name: Commit and push changes

@@ -63,13 +63,13 @@ jobs:
 
           echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
 
-          # Create tag only if it doesn't exist
           if git rev-parse "$NEW_VERSION" >/dev/null 2>&1; then
             echo "Tag $NEW_VERSION already exists, skipping creation"
           else
             git tag -a "$NEW_VERSION" -m "Release $NEW_VERSION"
             git push origin "$NEW_VERSION"
           fi
+
 
       - name: Log in to GHCR
         uses: docker/login-action@v3

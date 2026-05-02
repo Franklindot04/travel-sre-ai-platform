@@ -5,28 +5,20 @@ metadata:
   namespace: argocd
 spec:
   generators:
-    - matrix:
-        generators:
-          - list:
-              elements:
-                - env: dev
-                - env: develop
-                - env: main
-                - env: preprod
-          - git:
-              repoURL: https://github.com/Franklindot04/travel-sre-ai-platform.git
-              revision: main
-              directories:
-                - path: infra/k8s/platform/{{env}}/*
+    - git:
+        repoURL: https://github.com/Franklindot04/travel-sre-ai-platform.git
+        revision: main
+        directories:
+          - path: infra/k8s/platform/*
   template:
     metadata:
-      name: "{{env}}-{{path.basename}}"
+      name: "{{path.basename}}"
     spec:
       project: default
       source:
         repoURL: https://github.com/Franklindot04/travel-sre-ai-platform.git
         targetRevision: main
-        path: "infra/k8s/platform/{{env}}/{{path.basename}}"
+        path: "infra/k8s/platform/{{path.basename}}"
       destination:
         server: https://kubernetes.default.svc
         namespace: platform

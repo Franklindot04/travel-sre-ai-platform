@@ -1,7 +1,5 @@
-// services/ai-sre-agent/src/remediation.ts
-
 import { exec } from "child_process";
-import { sendSlackMessage } from "./slack";
+import { notifySlack as sendSlackMessage } from "./slack";
 import util from "util";
 
 const execAsync = util.promisify(exec);
@@ -56,7 +54,9 @@ export async function handleRemediation(alert: any) {
   } catch (err) {
     console.error("Remediation error:", err);
     await sendSlackMessage(
-      `❌ Auto-remediation failed: ${err instanceof Error ? err.message : err}`
+      `❌ Auto-remediation failed: ${
+        err instanceof Error ? err.message : err
+      }`
     );
   }
 }

@@ -21,14 +21,19 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Set Git identity
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+
       - name: Set variables
         id: vars
         run: |
           BRANCH="${GITHUB_REF#refs/heads/}"
           echo "branch=$BRANCH" >> $GITHUB_OUTPUT
 
-          # Extract the latest semantic version tag
-          VERSION=$(git describe --tags --abbrev=0)
+          # Extract latest tag OR fallback to v1.0.0
+          VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "v1.0.0")
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Update image tags in all service deployments
@@ -39,14 +44,11 @@ jobs:
           for FILE in infra/k8s/platform/*/deployment.yaml; do
             echo "Updating $FILE"
             SERVICE=$(basename $(dirname "$FILE"))
-
             sed -i "s|image: .*|image: ghcr.io/${OWNER_LOWER}/${SERVICE}:${VERSION}|g" "$FILE"
           done
 
       - name: Commit and push changes
         run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
           git add infra/k8s/platform/*/deployment.yaml
           git commit -m "CD: update deployment images to ${{ steps.vars.outputs.version }}" || echo "No changes to commit"
           git push origin HEAD:${{ steps.vars.outputs.branch }}

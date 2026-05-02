@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: booking-service
-          image: franklin/booking-service:v20260502-0035-827a480
+          image: franklin/booking-service:v20260502-0042-ca5a4c6
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3004

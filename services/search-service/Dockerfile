@@ -2,23 +2,23 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy ONLY the service's package.json first
+# 1. Copy ONLY package.json first
 COPY services/search-service/package*.json ./
 
+# 2. Install ALL dependencies (dev + prod)
 RUN npm install
 
-# Copy the service source code
+# 3. Copy service source code
 COPY services/search-service .
 
-# Copy shared folder
+# 4. Copy shared folder
 COPY shared ./shared
 
-# After build
+# 5. Build TypeScript
 RUN npm run build
 
-# Copy shared TS files into dist/shared
+# 6. Copy shared TS files into dist
 RUN mkdir -p dist/shared && cp -r shared/* dist/shared/
 
-EXPOSE 3001
-
+EXPOSE 3000
 CMD ["node", "dist/src/index.js"]

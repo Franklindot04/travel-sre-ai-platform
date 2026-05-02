@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: api-gateway
-          image: franklin/api-gateway:v20260502-0042-ca5a4c6
+          image: franklin/api-gateway:v20260502-0047-2152afd
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000

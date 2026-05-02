@@ -35,8 +35,11 @@ jobs:
     env:
       REGISTRY: ghcr.io
       OWNER: ${{ github.repository_owner }}
-      IMAGE_NAME: ${{ matrix.service }}
-      SHA_TAG: ${{ github.sha }}
+    steps:
+      - name: Force lowercase owner
+        run: echo "OWNER=$(echo $OWNER | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+        IMAGE_NAME: ${{ matrix.service }}
+        SHA_TAG: ${{ github.sha }}
 
     steps:
       - name: Checkout

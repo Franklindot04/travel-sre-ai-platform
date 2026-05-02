@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: inventory-service
-          image: franklin/inventory-service:v20260502-0137-34ffc48
+          image: franklin/inventory-service:v20260502-0147-015273a
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3002

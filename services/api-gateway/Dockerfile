@@ -1,4 +1,3 @@
-
 FROM node:18-alpine
 
 WORKDIR /app
@@ -6,7 +5,8 @@ WORKDIR /app
 # Copy ONLY the service's package.json first
 COPY services/api-gateway/package*.json ./
 
-RUN npm install --production
+# Install ALL dependencies (including devDependencies)
+RUN npm install
 
 # Copy the service source code
 COPY services/api-gateway .

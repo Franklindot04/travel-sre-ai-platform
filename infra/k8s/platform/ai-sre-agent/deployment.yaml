@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: ai-sre-agent
-          image: franklin/ai-sre-agent:v20260502-0217-059b792
+          image: franklin/ai-sre-agent:v20260502-0235-7a1c520
           imagePullPolicy: Always
           ports:
             - containerPort: 3005

@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: search-service
-          image: ghcr.io/franklindot04/search-service:v1.0.2
+          image: ghcr.io/franklindot04/search-service:v1.0.4
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3001

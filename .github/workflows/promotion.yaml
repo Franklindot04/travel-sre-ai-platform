@@ -1,11 +1,27 @@
 name: Promotion - Manual Environment Promotion
 
+permissions:
+  contents: write
+
 on:
-  push:
-    branches:
-      - dev
-      - develop
-      - preprod
+  workflow_dispatch:
+    inputs:
+      from_env:
+        description: "Source environment (dev, develop, preprod)"
+        required: true
+        type: choice
+        options:
+          - dev
+          - develop
+          - preprod
+      to_env:
+        description: "Target environment (develop, preprod, main)"
+        required: true
+        type: choice
+        options:
+          - develop
+          - preprod
+          - main
 
 jobs:
   promote:
@@ -17,42 +33,57 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Determine promotion target
-        id: vars
+      - name: Validate promotion path
         run: |
-          BRANCH="${GITHUB_REF#refs/heads/}"
+          FROM="${{ github.event.inputs.from_env }}"
+          TO="${{ github.event.inputs.to_env }}"
 
-          if [ "$BRANCH" = "dev" ]; then
-            TARGET="develop"
-          elif [ "$BRANCH" = "develop" ]; then
-            TARGET="preprod"
-          elif [ "$BRANCH" = "preprod" ]; then
-            TARGET="main"
-          else
-            echo "No promotion target for branch: $BRANCH"
+          if [ "$FROM" = "dev" ] && [ "$TO" != "develop" ]; then
+            echo "Invalid promotion: dev can only promote to develop"
             exit 1
           fi
 
-          echo "source=$BRANCH" >> $GITHUB_OUTPUT
-          echo "target=$TARGET" >> $GITHUB_OUTPUT
+          if [ "$FROM" = "develop" ] && [ "$TO" != "preprod" ]; then
+            echo "Invalid promotion: develop can only promote to preprod"
+            exit 1
+          fi
 
-      - name: Create promotion pull request
-        uses: peter-evans/create-pull-request@v6
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          title: "Promotion: ${{ steps.vars.outputs.source }} → ${{ steps.vars.outputs.target }}"
-          body: |
-            ### Manual Promotion Required
+          if [ "$FROM" = "preprod" ] && [ "$TO" != "main" ]; then
+            echo "Invalid promotion: preprod can only promote to main"
+            exit 1
+          fi
 
-            This PR promotes **${{ steps.vars.outputs.source }}** → **${{ steps.vars.outputs.target }}**.
+      - name: Get latest semantic version
+        id: version
+        run: |
+          VERSION=$(git describe --tags --abbrev=0)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
-            After merging:
-            - CD workflow will update deployment manifests
-            - ArgoCD will sync the target environment automatically
+      - name: Promote manifests
+        run: |
+          FROM="${{ github.event.inputs.from_env }}"
+          TO="${{ github.event.inputs.to_env }}"
+          VERSION="${{ steps.version.outputs.version }}"
+          OWNER_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
 
-            Approve and merge when ready.
-          base: ${{ steps.vars.outputs.target }}
-          branch: promotion/${{ steps.vars.outputs.source }}-to-${{ steps.vars.outputs.target }}
-          labels: |
-            promotion
-            manual-approval
+          echo "Promoting version $VERSION from $FROM → $TO"
+
+          for FILE in infra/k8s/platform/$FROM/*/deployment.yaml; do
+            SERVICE=$(basename $(dirname "$FILE"))
+            TARGET_FILE="infra/k8s/platform/$TO/$SERVICE/deployment.yaml"
+
+            echo "Updating $TARGET_FILE"
+            sed -i "s|image: .*|image: ghcr.io/${OWNER_LOWER}/${SERVICE}:${VERSION}|g" "$TARGET_FILE"
+          done
+
+      - name: Commit and push promotion
+        run: |
+          TO="${{ github.event.inputs.to_env }}"
+          VERSION="${{ steps.version.outputs.version }}"
+
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git add infra/k8s/platform/$TO/*/deployment.yaml
+          git commit -m "Promotion: $VERSION promoted to $TO" || echo "No changes to commit"
+          git push origin HEAD:$TO

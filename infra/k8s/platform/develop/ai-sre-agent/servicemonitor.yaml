@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: ai-sre-agent
+  namespace: observability
+  labels:
+    release: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: ai-sre-agent
+      prometheus: scrape
+  namespaceSelector:
+    matchNames:
+      - platform
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 15s

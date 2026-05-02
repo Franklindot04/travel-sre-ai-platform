@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: booking-service
+  namespace: platform
+  labels:
+    app: booking-service
+    prometheus: scrape
+spec:
+  selector:
+    app: booking-service
+  ports:
+    - name: http
+      port: 3004
+      targetPort: 3004

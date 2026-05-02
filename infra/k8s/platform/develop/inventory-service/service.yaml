@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: inventory-service
+  namespace: platform
+  labels:
+    app: inventory-service
+    prometheus: scrape
+spec:
+  selector:
+    app: inventory-service
+  ports:
+    - name: http
+      port: 3002
+      targetPort: 3002

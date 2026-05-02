@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: search-service
-          image: search-service:latest
+          image: franklin/search-service:v20260502-0035-827a480
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3001

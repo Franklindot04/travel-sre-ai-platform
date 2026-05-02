@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: inventory-service
-          image: ghcr.io/franklindot04/inventory-service:v1.0.0
+          image: ghcr.io/franklindot04/inventory-service:v1.0.2
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3002

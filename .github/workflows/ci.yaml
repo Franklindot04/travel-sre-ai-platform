@@ -35,13 +35,13 @@ jobs:
     env:
       REGISTRY: ghcr.io
       OWNER: ${{ github.repository_owner }}
+      IMAGE_NAME: ${{ matrix.service }}     
+      SHA_TAG: ${{ github.sha }}            
+
     steps:
       - name: Force lowercase owner
         run: echo "OWNER=$(echo $OWNER | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
-        IMAGE_NAME: ${{ matrix.service }}
-        SHA_TAG: ${{ github.sha }}
 
-    steps:
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -55,8 +55,8 @@ jobs:
       - name: Build Docker image
         working-directory: services/${{ matrix.service }}
         run: |
-          docker build -t $REGISTRY/$OWNER/${IMAGE_NAME}:$SHA_TAG .
+          docker build -t $REGISTRY/$OWNER/$IMAGE_NAME:$SHA_TAG .
 
       - name: Push Docker image
         run: |
-          docker push $REGISTRY/$OWNER/${IMAGE_NAME}:$SHA_TAG
+          docker push $REGISTRY/$OWNER/$IMAGE_NAME:$SHA_TAG

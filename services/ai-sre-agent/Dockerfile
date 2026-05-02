@@ -5,7 +5,7 @@ WORKDIR /app
 # Copy ONLY the service's package.json first
 COPY services/ai-sre-agent/package*.json ./
 
-RUN npm install --production
+RUN npm install
 
 # Copy the service source code
 COPY services/ai-sre-agent .

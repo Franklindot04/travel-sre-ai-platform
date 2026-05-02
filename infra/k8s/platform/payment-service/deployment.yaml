@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: payment-service
-          image: franklin/payment-service:v20260502-0111-4046a1a
+          image: franklin/payment-service:v20260502-0137-34ffc48
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3003

@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: platform-applicationset
+  namespace: argocd
+spec:
+  generators:
+    - matrix:
+        generators:
+          - list:
+              elements:
+                - env: dev
+                - env: develop
+                - env: main
+                - env: preprod
+          - git:
+              repoURL: https://github.com/Franklindot04/travel-sre-ai-platform.git
+              revision: main
+              directories:
+                - path: infra/k8s/platform/{{env}}/*
+  template:
+    metadata:
+      name: "{{env}}-{{path.basename}}"
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/Franklindot04/travel-sre-ai-platform.git
+        targetRevision: main
+        path: "infra/k8s/platform/{{env}}/{{path.basename}}"
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: platform
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true

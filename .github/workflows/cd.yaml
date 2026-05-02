@@ -8,6 +8,19 @@ on:
       - preprod
       - main
 
+name: CD - Update Deployment Manifests
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches:
+      - dev
+      - develop
+      - preprod
+      - main
+
 jobs:
   update-manifests:
     runs-on: ubuntu-latest

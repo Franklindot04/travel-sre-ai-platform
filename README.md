@@ -32,8 +32,7 @@ This project is intentionally compact but architected like a **real enterprise�
 
 # 🧠 High‑Level Architecture
 
-Mermaid (paste into ```mermaid in your repo):
-
+```mermaid
 flowchart TD
 A[Client / User] --> G[API Gateway]
 
@@ -48,6 +47,7 @@ end
 
 A --> U1
 U1 --> G
+```
 
 subgraph SRE[AI SRE Agent]
 W1[Worker Loop]

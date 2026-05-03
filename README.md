@@ -204,7 +204,7 @@ Runs inside the platform namespace.
 
 # 📂 Repository Structure
 
-.
+```markdown
 ├── README.md
 ├── docs
 │   ├── apis.md
@@ -248,7 +248,7 @@ Runs inside the platform namespace.
     ├── logger.ts
     ├── metrics.ts
     └── types.d.ts
-    
+```
 ---
 
 # 🧪 What’s Fully Implemented

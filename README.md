@@ -204,51 +204,51 @@ Runs inside the platform namespace.
 
 # 📂 Repository Structure
 
-.  
-├── README.md  
-├── docs  
-│   ├── apis.md  
-│   ├── architecture-diagram.md  
-│   ├── architecture.md  
-│   ├── auto-remediation.md  
-│   ├── platform-overview.md  
-│   └── slo.md  
-├── infra  
-│   ├── argocd  
-│   │   └── applicationset-platform.yaml  
-│   ├── k8s  
-│   │   ├── namespaces  
-│   │   │   └── platform.yaml  
-│   │   └── platform  
-│   │       ├── ai-sre-agent  
-│   │       ├── api-gateway  
-│   │       ├── booking-service  
-│   │       ├── inventory-service  
-│   │       ├── payment-service  
-│   │       ├── search-service  
-│   │       └── ui-portal  
-│   └── observability  
-│       ├── alertmanager  
-│       ├── grafana-dashboards  
-│       ├── prometheus-rules  
-│       ├── prometheus-values.yaml  
-│       ├── loki-values.yaml  
-│       └── promtail-values.yaml  
-├── services  
-│   ├── ai-sre-agent  
-│   ├── api-gateway  
-│   ├── booking-service  
-│   ├── inventory-service  
-│   ├── payment-service  
-│   ├── search-service  
-│   └── ui-portal  
-└── shared  
-    ├── config.ts  
-    ├── http.ts  
-    ├── logger.ts  
-    ├── metrics.ts  
-    └── types.d.ts  
-
+.
+├── README.md
+├── docs
+│   ├── apis.md
+│   ├── architecture-diagram.md
+│   ├── architecture.md
+│   ├── auto-remediation.md
+│   ├── platform-overview.md
+│   └── slo.md
+├── infra
+│   ├── argocd
+│   │   └── applicationset-platform.yaml
+│   ├── k8s
+│   │   ├── namespaces
+│   │   │   └── platform.yaml
+│   │   └── platform
+│   │       ├── ai-sre-agent
+│   │       ├── api-gateway
+│   │       ├── booking-service
+│   │       ├── inventory-service
+│   │       ├── payment-service
+│   │       ├── search-service
+│   │       └── ui-portal
+│   └── observability
+│       ├── alertmanager
+│       ├── grafana-dashboards
+│       ├── prometheus-rules
+│       ├── prometheus-values.yaml
+│       ├── loki-values.yaml
+│       └── promtail-values.yaml
+├── services
+│   ├── ai-sre-agent
+│   ├── api-gateway
+│   ├── booking-service
+│   ├── inventory-service
+│   ├── payment-service
+│   ├── search-service
+│   └── ui-portal
+└── shared
+    ├── config.ts
+    ├── http.ts
+    ├── logger.ts
+    ├── metrics.ts
+    └── types.d.ts
+    
 ---
 
 # 🧪 What’s Fully Implemented

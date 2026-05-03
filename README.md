@@ -47,7 +47,6 @@ end
 
 A --> U1
 U1 --> G
-```
 
 subgraph SRE[AI SRE Agent]
 W1[Worker Loop]
@@ -79,7 +78,7 @@ AM -->|Slack Alerts| SL[Slack]
 AM -->|Webhook to AI SRE Agent| W2
 
 W2 -->|Restart / Scale / Escalate| K8S[(Kubernetes API)]
-
+```
 ---
 
 # 🔥 Key Features

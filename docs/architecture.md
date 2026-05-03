@@ -47,8 +47,6 @@ inventory-service
 payment-service  
 - Simulates payment authorization  
 
---- 
-
 ---
 
 ## 2. SRE / AI Components
@@ -74,7 +72,7 @@ The platform includes a full observability and reliability stack:
 - ServiceMonitor for each microservice  
 - PrometheusRule for:  
   - service alerts  
-  - SLO burn‑rate alerts  
+  - SLO burn-rate alerts  
   - latency + availability recording rules  
 
 - Grafana dashboards (stored in ConfigMaps):  
@@ -83,8 +81,8 @@ The platform includes a full observability and reliability stack:
   - AI SRE Agent SLO Dashboard  
   - Service Template Dashboard  
 
-- Loki + Promtail for log aggregation  
-
+- Loki + Promtail for log aggregation
+  
 ---
 
 ## 3. Deployment Model

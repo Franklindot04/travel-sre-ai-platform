@@ -1,240 +1,224 @@
 # API Contracts — travel-sre-ai-platform
 
-This document defines the HTTP API contracts for all microservices in the platform.
-
+This document defines the HTTP API contracts for all microservices in the platform.  
 All backend services expose:
 
-* `GET /health` — basic liveness/readiness check
-* `GET /metrics` — Prometheus metrics endpoint (scraped by Prometheus via ServiceMonitor)
+- GET /health — liveness/readiness  
+- GET /metrics — Prometheus metrics (scraped via ServiceMonitor)
 
 ---
 
 # 1. api-gateway
 
-The API Gateway is the single public entrypoint. It routes requests to the internal services and aggregates responses.
+The single public entrypoint. Routes traffic to internal services and is consumed by the UI Portal.
 
 ### GET /health
-
-Health check for the gateway itself.
+Gateway health check.
 
 ### GET /metrics
-
-Prometheus metrics for the gateway.
+Prometheus metrics.
 
 ### GET /search
+Unified search endpoint.
 
-Search across flights and hotels.
+Query params:
+- q: string  
+- type: flight | hotel
 
-**Query params:**
-
-* `q` (string) — free text query
-* `type` (string) — `flight` | `hotel`
-
-**Internal routing:**
-
-* Proxies to `search-service`:
-
-  * `/search/flights`
-  * `/search/hotels`
+Internal routing:
+- search-service → /search/flights  
+- search-service → /search/hotels  
 
 ### POST /book
+Create a booking.
 
-Create a booking via the gateway.
-
-**Body:**
+Body:
 {
-"userId": "string",
-"itineraryId": "string",
-"paymentMethod": "string"
+  "userId": "string",
+  "itineraryId": "string",
+  "paymentMethod": "string"
 }
 
-**Internal routing:**
-
-* Proxies to `booking-service /bookings`
+Internal routing:
+- booking-service → /bookings
 
 ---
 
 # 2. search-service
 
-Responsible for searching flights and hotels.
+Provides flight and hotel search.
 
 ### GET /health
-
-Service health check.
+Service health.
 
 ### GET /metrics
-
-Prometheus metrics for search-service.
+Prometheus metrics.
 
 ### GET /search/flights
-
 Search flights.
 
-**Query params:**
-
-* `origin` (string)
-* `destination` (string)
-* `date` (string, ISO-8601)
+Query params:
+- origin  
+- destination  
+- date (ISO-8601)
 
 ### GET /search/hotels
-
 Search hotels.
 
-**Query params:**
-
-* `city` (string)
-* `checkIn` (string, ISO-8601)
-* `checkOut` (string, ISO-8601)
+Query params:
+- city  
+- checkIn (ISO-8601)  
+- checkOut (ISO-8601)
 
 ---
 
 # 3. booking-service
 
-Coordinates bookings, inventory reservation, and payments.
+Coordinates booking creation, inventory reservation and payment.
 
 ### GET /health
-
-Service health check.
+Service health.
 
 ### GET /metrics
-
-Prometheus metrics for booking-service.
+Prometheus metrics.
 
 ### POST /bookings
-
 Create a booking.
 
-**Body:**
+Body:
 {
-"userId": "string",
-"itineraryId": "string",
-"paymentDetails": {}
+  "userId": "string",
+  "itineraryId": "string",
+  "paymentDetails": {}
 }
 
-**Internal calls:**
-
-* `inventory-service` — reserve inventory
-* `payment-service` — charge payment
+Internal calls:
+- inventory-service → reserve  
+- payment-service → charge  
 
 ### GET /bookings/:id
-
 Retrieve booking details.
-
-**Path params:**
-
-* `id` (string) — booking identifier
 
 ---
 
 # 4. inventory-service
 
-Manages inventory reservations for itineraries.
+Manages inventory reservations.
 
 ### GET /health
-
-Service health check.
+Service health.
 
 ### GET /metrics
-
-Prometheus metrics for inventory-service.
+Prometheus metrics.
 
 ### POST /inventory/reserve
+Reserve seats/rooms.
 
-Reserve inventory for an itinerary.
-
-**Body:**
+Body:
 {
-"itineraryId": "string",
-"count": 1
+  "itineraryId": "string",
+  "count": 1
 }
 
 ### POST /inventory/release
+Release reserved inventory.
 
-Release previously reserved inventory.
-
-**Body:**
+Body:
 {
-"itineraryId": "string",
-"count": 1
+  "itineraryId": "string",
+  "count": 1
 }
 
 ---
 
 # 5. payment-service
 
-Simulates payment authorization and charging.
+Simulates payment authorization.
 
 ### GET /health
-
-Service health check.
+Service health.
 
 ### GET /metrics
-
-Prometheus metrics for payment-service.
+Prometheus metrics.
 
 ### POST /payments
-
 Process a payment.
 
-**Body:**
+Body:
 {
-"amount": 100.0,
-"currency": "string",
-"method": "string"
+  "amount": 100.0,
+  "currency": "string",
+  "method": "string"
 }
 
 ---
 
 # 6. ai-sre-agent
 
-The AI SRE Agent analyzes incidents, metrics, and logs to suggest probable causes and remediations. It is also wired into the SLO/alerting pipeline and exposes metrics for burn-rate alerts.
+Analyzes incidents, logs and metrics. Integrated with SLOs, burn‑rate alerts and auto‑remediation.
 
 ### GET /health
-
-Service health check.
+Service health.
 
 ### GET /metrics
-
-Prometheus metrics for AI SRE Agent, including:
-
-* SLO indicators
-* Error rates
-* Burn-rate related metrics
+Prometheus metrics including:
+- SLO indicators  
+- Error rates  
+- Burn-rate alert metrics  
+- Worker loop metrics  
 
 ### POST /analyze/incident
+Analyze an incident.
 
-Analyze an incident and return SRE-focused insights.
-
-**Body:**
+Body:
 {
-"service": "string",
-"timeframe": "string",
-"symptoms": "string",
-"logsSnippet": "string (optional)",
-"metricsSummary": "string (optional)"
+  "service": "string",
+  "timeframe": "string",
+  "symptoms": "string",
+  "logsSnippet": "string (optional)",
+  "metricsSummary": "string (optional)"
 }
 
-**Response:**
+Response:
 {
-"probableCause": "string",
-"suggestedChecks": ["string"],
-"suggestedRemediations": ["string"]
+  "probableCause": "string",
+  "suggestedChecks": ["string"],
+  "suggestedRemediations": ["string"]
 }
+
+### POST /remediate
+Called by Alertmanager webhook.
+
+Body:
+{
+  "alertName": "string",
+  "severity": "string",
+  "service": "string",
+  "description": "string"
+}
+
+Actions performed:
+- Restart itself  
+- Scale to 2 replicas  
+- Scale to 3 replicas  
+- Escalate to humans via Slack  
 
 ---
 
 # 7. ui-portal
 
-The UI Portal is a frontend-only application (SPA) that consumes the APIs above. It does not expose its own backend HTTP API; instead, it:
+Frontend SPA for platform observability and user flows.  
+It does not expose backend APIs.
 
-* Calls `api-gateway` for business flows (search, booking)
-* Calls `ai-sre-agent` (via gateway or direct internal routing) for incident analysis
+It consumes:
+- api-gateway (search, booking)  
+- ai-sre-agent (incident analysis)  
+- Prometheus-backed dashboards (via gateway or internal routing)
 
-**Visualizes:**
+UI features:
+- Service health visualization  
+- SLO & error budget dashboards  
+- Deployment version display (from image tags)  
+- Incident analysis viewer  
 
-* Service health
-* SLOs and error budgets
-* Incident analysis results
-* Deployment/version information (from image tags)
-
-All interactions are browser → UI → gateway/agent; there are no additional public REST endpoints beyond those already documented.
+No additional REST endpoints exist for this service.

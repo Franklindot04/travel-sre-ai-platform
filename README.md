@@ -4,6 +4,7 @@
 ![Kubernetes](https://img.shields.io/badge/Kubernetes-Platform-blue?logo=kubernetes)
 ![Prometheus](https://img.shields.io/badge/Monitoring-Prometheus-orange?logo=prometheus)
 ![Grafana](https://img.shields.io/badge/Dashboards-Grafana-yellow?logo=grafana)
+![Loki](https://img.shields.io/badge/Logs-Loki-green?logo=grafana)
 ![Slack](https://img.shields.io/badge/Alerts-Slack-purple?logo=slack)
 ![TypeScript](https://img.shields.io/badge/Code-TypeScript-blue?logo=typescript)
 ![Status](https://img.shields.io/badge/Status-Production--Ready-brightgreen)
@@ -12,31 +13,41 @@
 
 # 📘 Overview
 
-The **AI SRE Agent Platform** is a cloud‑native, SRE‑focused demo environment that simulates a real production ecosystem:
+The **AI SRE Agent Platform** is a Kubernetes‑native, SRE‑focused microservice ecosystem designed to demonstrate **how modern reliability engineering is done in production**.
 
-- Multiple microservices  
-- API gateway  
-- Full observability stack  
-- SLOs + burn‑rate alerts  
+It includes:
+
+- A complete microservice architecture  
+- A UI portal for platform visibility  
+- A full observability stack (Prometheus, Grafana, Loki, Promtail)  
+- SLOs, error budgets, burn‑rate alerts  
 - Slack alerting  
-- Auto‑remediation  
-- GitOps‑friendly dashboards  
-- Kubernetes‑native deployments  
+- Auto‑remediation workflows  
+- GitOps‑ready manifests  
+- A fully instrumented AI SRE Agent capable of analyzing incidents and self‑healing  
 
-It is designed to demonstrate **how modern SRE teams build, monitor, and operate distributed systems**.
+This project is intentionally compact but architected like a **real enterprise‑grade platform**.
 
 ---
 
 # 🧠 High‑Level Architecture
 
-```mermaid
-flowchart TD
-A[Client / User] --> B[API Gateway]
+Mermaid (paste into ```mermaid in your repo):
 
-B --> S1[Search Service]
-B --> B1[Booking Service]
-B --> I1[Inventory Service]
-B --> P1[Payment Service]
+flowchart TD
+A[Client / User] --> G[API Gateway]
+
+G --> S1[Search Service]
+G --> B1[Booking Service]
+G --> I1[Inventory Service]
+G --> P1[Payment Service]
+
+subgraph UI[UI Portal]
+U1[Frontend SPA]
+end
+
+A --> U1
+U1 --> G
 
 subgraph SRE[AI SRE Agent]
 W1[Worker Loop]
@@ -46,7 +57,7 @@ end
 subgraph OBS[Observability Stack]
 P[Prometheus]
 AM[Alertmanager]
-G[Grafana]
+GRA[Grafana]
 L[Loki]
 PT[Promtail]
 end
@@ -65,16 +76,15 @@ W1 --> PT --> L
 
 P -->|SLO Burn‑Rate Alerts| AM
 AM -->|Slack Alerts| SL[Slack]
-AM -->|Webhook| W2
+AM -->|Webhook to AI SRE Agent| W2
 
-W2 -->|Restart / Scale| K8S[(Kubernetes API)]
-```
+W2 -->|Restart / Scale / Escalate| K8S[(Kubernetes API)]
 
 ---
 
 # 🔥 Key Features
 
-## ✅ 1. Multi‑Service Kubernetes Platform  
+## 1. Multi‑Service Kubernetes Platform  
 Includes:
 
 - API Gateway  
@@ -82,58 +92,64 @@ Includes:
 - Inventory Service  
 - Payment Service  
 - Search Service  
+- UI Portal  
 - AI SRE Agent  
 
 Each service includes:
 
+- TypeScript code  
+- Dockerfile  
 - Deployment  
 - Service  
 - ServiceMonitor  
-- Dockerfile  
-- TypeScript code  
+- Structured logging  
+- Prometheus metrics  
 
 ---
 
-## ✅ 2. Full Observability Stack
+## 2. Full Observability Stack
 
-### **Prometheus**
+### Prometheus
 - Scrapes all services  
 - Evaluates SLO recording rules  
 - Computes burn‑rates  
+- Powers dashboards and alerting  
 
-### **Alertmanager**
-- Routes alerts to:
-  - Slack  
-  - AI SRE Agent `/remediate` webhook  
+### Alertmanager
+Routes alerts to:
 
-### **Grafana**
+- Slack  
+- AI SRE Agent `/remediate` webhook  
+
+### Grafana
 Dashboards included:
 
 - Platform Overview  
 - AI SRE Agent Dashboard  
 - AI SRE Agent SLO Dashboard  
 - Per‑service dashboards  
+- Service template dashboard  
 
-### **Loki + Promtail**
+### Loki + Promtail
 - Centralized logs  
 - Queryable in Grafana  
+- Structured JSON logging  
 
 ---
 
 # 🎯 SLOs & Error Budgets
 
-The AI SRE Agent has two SLOs:
+The AI SRE Agent enforces two SLOs:
 
-### **Availability SLO**
+### Availability SLO
 - 99% success rate  
-- Based on `jobs_processed_total`  
+- Based on jobs_processed_total  
 
-### **Latency SLO**
-- 95% of jobs under **1.5s**  
-- Based on `job_duration_seconds_bucket`  
+### Latency SLO
+- 95% of jobs under 1.5s  
+- Based on job_duration_seconds_bucket  
 
-### **Burn‑Rate Alerts**
-Multi‑window burn‑rates:
+### Burn‑Rate Alerts
 
 | Window | Threshold | Purpose |
 |--------|-----------|---------|
@@ -148,15 +164,14 @@ Multi‑window burn‑rates:
 
 The AI SRE Agent exposes:
 
-```
-/health
-/metrics
-/remediate
-```
+/health  
+/metrics  
+/analyze/incident  
+/remediate  
 
 Alertmanager POSTs alerts to `/remediate`.
 
-### Remediation actions:
+### Remediation Actions
 
 | Burn Type | Action |
 |-----------|--------|
@@ -165,146 +180,75 @@ Alertmanager POSTs alerts to `/remediate`.
 | Persistent burn | Scale to 3 replicas |
 | Long burn | Human escalation |
 
-### Slack notifications example:
+### Slack Notifications
 
-```
-⚠️ Sustained burn — scaling ai-sre-agent to 2 replicas
-🔥 Persistent burn — scaling ai-sre-agent to 3 replicas
-🚨 Long burn — human intervention required
-```
+⚠️ Sustained burn — scaling ai-sre-agent to 2 replicas  
+🔥 Persistent burn — scaling ai-sre-agent to 3 replicas  
+🚨 Long burn — human intervention required  
 
 ---
 
-## 📂 Repository Structure
+# 🖥 UI Portal
 
-```text
-.
-├── README.md
-├── docs
-│   ├── apis.md
-│   ├── architecture-diagram.md
-│   ├── architecture.md
-│   ├── auto-remediation.md
-│   ├── platform-overview.md
-│   └── slo.md
-├── infra
-│   ├── helm
-│   ├── k8s
-│   │   ├── namespaces
-│   │   │   └── platform.yaml
-│   │   └── platform
-│   │       ├── ai-sre-agent
-│   │       │   ├── deployment.yaml
-│   │       │   ├── service.yaml
-│   │       │   └── servicemonitor.yaml
-│   │       ├── api-gateway
-│   │       │   ├── deployment.yaml
-│   │       │   ├── service.yaml
-│   │       │   └── servicemonitor.yaml
-│   │       ├── booking-service
-│   │       │   ├── deployment.yaml
-│   │       │   ├── service.yaml
-│   │       │   └── servicemonitor.yaml
-│   │       ├── inventory-service
-│   │       │   ├── deployment.yaml
-│   │       │   ├── service.yaml
-│   │       │   └── servicemonitor.yaml
-│   │       ├── payment-service
-│   │       │   ├── deployment.yaml
-│   │       │   ├── service.yaml
-│   │       │   └── servicemonitor.yaml
-│   │       └── search-service
-│   │           ├── deployment.yaml
-│   │           ├── service.yaml
-│   │           └── servicemonitor.yaml
-│   └── observability
-│       ├── alertmanager
-│       │   └── ai-sre-agent-alerts.yaml
-│       ├── grafana-dashboards
-│       │   ├── json
-│       │   │   ├── ai-sre-agent-slo-dashboard.json
-│       │   │   ├── api-gateway.json
-│       │   │   ├── platform-overview.json
-│       │   │   └── service-template.json
-│       │   └── yaml
-│       │       ├── ai-sre-agent-dashboard.yaml
-│       │       ├── ai-sre-agent-slo-dashboard-configmap.yaml
-│       │       ├── platform-overview-configmap.yaml
-│       │       └── service-template-configmap.yaml
-│       ├── loki-values.yaml
-│       ├── prometheus-rules
-│       │   ├── ai-sre-agent-rules.yaml
-│       │   ├── ai-sre-agent-slo-alerts.yaml
-│       │   └── ai-sre-agent-slo-rules.yaml
-│       ├── prometheus-values.yaml
-│       └── promtail-values.yaml
-├── scripts
-├── services
-│   ├── _template
-│   │   ├── package.json
-│   │   ├── src
-│   │   │   └── index.ts
-│   │   ├── tests
-│   │   └── tsconfig.json
-│   ├── ai-sre-agent
-│   │   ├── Dockerfile
-│   │   ├── package-lock.json
-│   │   ├── package.json
-│   │   ├── src
-│   │   │   ├── index.ts
-│   │   │   ├── remediation.ts
-│   │   │   ├── slack.ts
-│   │   │   ├── worker-metrics.ts
-│   │   │   └── worker.ts
-│   │   ├── tests
-│   │   └── tsconfig.json
-│   ├── api-gateway
-│   │   ├── Dockerfile
-│   │   ├── package-lock.json
-│   │   ├── package.json
-│   │   ├── src
-│   │   │   └── index.ts
-│   │   ├── tests
-│   │   └── tsconfig.json
-│   ├── booking-service
-│   │   ├── Dockerfile
-│   │   ├── package-lock.json
-│   │   ├── package.json
-│   │   ├── src
-│   │   │   └── index.ts
-│   │   ├── tests
-│   │   └── tsconfig.json
-│   ├── inventory-service
-│   │   ├── Dockerfile
-│   │   ├── package-lock.json
-│   │   ├── package.json
-│   │   ├── src
-│   │   │   └── index.ts
-│   │   ├── tests
-│   │   └── tsconfig.json
-│   ├── payment-service
-│   │   ├── Dockerfile
-│   │   ├── package-lock.json
-│   │   ├── package.json
-│   │   ├── src
-│   │   │   └── index.ts
-│   │   ├── tests
-│   │   └── tsconfig.json
-│   └── search-service
-│       ├── Dockerfile
-│       ├── package-lock.json
-│       ├── package.json
-│       ├── src
-│       │   └── index.ts
-│       ├── tests
-│       └── tsconfig.json
-└── shared
-    ├── config.ts
-    ├── http.ts
-    ├── logger.ts
-    ├── metrics.ts
-    └── types.d.ts
-```
+A frontend SPA providing:
+
+- Service health overview  
+- SLO dashboards  
+- Error budget visualization  
+- Deployment version info  
+- Incident analysis viewer  
+- Integration with the AI SRE Agent  
+
+Runs inside the platform namespace.
+
+---
+
+# 📂 Repository Structure
+
+.  
+├── README.md  
+├── docs  
+│   ├── apis.md  
+│   ├── architecture-diagram.md  
+│   ├── architecture.md  
+│   ├── auto-remediation.md  
+│   ├── platform-overview.md  
+│   └── slo.md  
+├── infra  
+│   ├── argocd  
+│   │   └── applicationset-platform.yaml  
+│   ├── k8s  
+│   │   ├── namespaces  
+│   │   │   └── platform.yaml  
+│   │   └── platform  
+│   │       ├── ai-sre-agent  
+│   │       ├── api-gateway  
+│   │       ├── booking-service  
+│   │       ├── inventory-service  
+│   │       ├── payment-service  
+│   │       ├── search-service  
+│   │       └── ui-portal  
+│   └── observability  
+│       ├── alertmanager  
+│       ├── grafana-dashboards  
+│       ├── prometheus-rules  
+│       ├── prometheus-values.yaml  
+│       ├── loki-values.yaml  
+│       └── promtail-values.yaml  
+├── services  
+│   ├── ai-sre-agent  
+│   ├── api-gateway  
+│   ├── booking-service  
+│   ├── inventory-service  
+│   ├── payment-service  
+│   ├── search-service  
+│   └── ui-portal  
+└── shared  
+    ├── config.ts  
+    ├── http.ts  
+    ├── logger.ts  
+    ├── metrics.ts  
+    └── types.d.ts  
 
 ---
 
@@ -317,10 +261,11 @@ Alertmanager POSTs alerts to `/remediate`.
 - ✔ Burn‑rate alerts  
 - ✔ Alertmanager routing  
 - ✔ Slack notifications  
-- ✔ Auto‑remediation (restart + scale)  
+- ✔ Auto‑remediation (restart + scale + escalate)  
 - ✔ Grafana dashboards  
 - ✔ Loki + Promtail logging  
-- ✔ GitOps‑friendly dashboards  
+- ✔ UI Portal  
+- ✔ GitOps‑ready manifests  
 
 ---
 
@@ -334,36 +279,29 @@ Alertmanager POSTs alerts to `/remediate`.
 
 ### Medium‑Term
 - CI/CD pipeline  
-- GitOps with ArgoCD  
+- Full GitOps automation  
 - Load testing + chaos engineering  
 
 ### Long‑Term
 - Multi‑cluster federation  
 - Predictive scaling  
+- AI‑driven anomaly forecasting  
 
 ---
 
 # 🚀 Deployment
 
 ### 1. Apply namespaces
-```bash
 kubectl apply -f infra/k8s/namespaces
-```
 
 ### 2. Deploy platform services
-```bash
 kubectl apply -f infra/k8s/platform
-```
 
 ### 3. Deploy observability stack
-```bash
 kubectl apply -f infra/observability
-```
 
 ### 4. Deploy AI SRE Agent
-```bash
 kubectl apply -f infra/k8s/platform/ai-sre-agent
-```
 
 ---
 
@@ -387,6 +325,6 @@ This platform demonstrates **real‑world SRE engineering**:
 - Auto‑remediation  
 - Kubernetes  
 - Observability  
+- GitOps  
 
-It is a **portfolio‑grade**, **interview‑ready**, **production‑style** SRE platform.
-
+It is a **portfolio‑grade**, **interview‑ready**, **production‑style** SRE platform showcasing modern reliability engineering at a senior level.

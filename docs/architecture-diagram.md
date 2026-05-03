@@ -1,14 +1,12 @@
 # Architecture Diagram
 
-This document provides a high‑level and detailed view of the platform
-architecture, including microservices, observability stack, namespaces, and the
-AI SRE Agent auto‑remediation loop.
+This document provides a high‑level and detailed view of the platform architecture, including microservices, observability stack, namespaces, GitOps structure, and the AI SRE Agent auto‑remediation loop.
 
 ---
 
 ## 1. High‑Level System Architecture (Mermaid)
 
-```mermaid
+~~~mermaid
 flowchart TD
 A[Client / User] --> B[API Gateway]
 
@@ -17,9 +15,16 @@ B --> B1[Booking Service]
 B --> I1[Inventory Service]
 B --> P1[Payment Service]
 
+subgraph UI[UI Portal]
+U1[Frontend SPA]
+end
+
+A --> U1
+U1 --> B
+
 subgraph SRE[AI SRE Agent]
 W1[Worker Loop]
-W2[Agent Endpoints]
+W2[Agent API Endpoints]
 end
 
 subgraph OBS[Observability Stack]
@@ -44,46 +49,53 @@ W1 --> PT --> L
 
 P -->|SLO Burn‑Rate Alerts| AM
 AM -->|Slack Alerts| SL[Slack]
-AM -->|Webhook| W2
+AM -->|Webhook to AI SRE Agent| W2
 
-W2 -->|Restart / Scale| K8S[(Kubernetes API)]
-```
+W2 -->|Restart / Scale / Escalate| K8S[(Kubernetes API)]
+~~~
 
 ---
 
 ## 2. Kubernetes Namespace Layout
 
-All platform services run in the **`platform`** namespace:
+Platform namespace (`platform`):
 
-```
 infra/k8s/platform/
 ├── ai-sre-agent
 ├── api-gateway
 ├── booking-service
 ├── inventory-service
 ├── payment-service
-└── search-service
-```
+├── search-service
+└── ui-portal
 
-Observability components run in the **`observability`** namespace:
+Observability namespace (`observability`):
 
-```
 infra/observability/
 ├── alertmanager
+│   └── ai-sre-agent-alerts.yaml
 ├── grafana-dashboards
+│   ├── json
+│   └── yaml
 ├── prometheus-rules
+│   ├── ai-sre-agent-rules.yaml
+│   ├── ai-sre-agent-slo-alerts.yaml
+│   └── ai-sre-agent-slo-rules.yaml
 ├── prometheus-values.yaml
 ├── loki-values.yaml
 └── promtail-values.yaml
-```
+
+GitOps (ArgoCD ApplicationSet):
+
+infra/argocd/
+└── applicationset-platform.yaml
 
 ---
 
 ## 3. Detailed Project Structure Diagram (Mermaid)
 
-This diagram mirrors your actual repo tree and shows how components relate.
+Mermaid definition (paste into a ```mermaid block in your editor):
 
-```mermaid
 flowchart TD
 
     subgraph ROOT[Repository Root]
@@ -92,26 +104,27 @@ flowchart TD
         INFRA[infra/]
         SRV[services/]
         SHARED[shared/]
-        SCRIPTS[scripts/]
     end
 
-    %% Docs
     subgraph DOCS
         D1[architecture.md]
         D2[architecture-diagram.md]
         D3[apis.md]
         D4[slo.md]
         D5[auto-remediation.md]
+        D6[platform-overview.md]
     end
 
-    %% Infra
     subgraph INFRA
+        ARGO[argocd/]
         K8S[k8s/]
         OBS[observability/]
-        HELM[helm/]
     end
 
-    %% K8s
+    subgraph ARGO
+        A1[applicationset-platform.yaml]
+    end
+
     subgraph K8S
         NS[namespaces/platform.yaml]
         PLAT[platform/]
@@ -124,9 +137,9 @@ flowchart TD
         P4[inventory-service/]
         P5[payment-service/]
         P6[search-service/]
+        P7[ui-portal/]
     end
 
-    %% Observability
     subgraph OBS
         O1[alertmanager/]
         O2[grafana-dashboards/]
@@ -136,7 +149,6 @@ flowchart TD
         O6[promtail-values.yaml]
     end
 
-    %% Services
     subgraph SRV
         S1[ai-sre-agent/]
         S2[api-gateway/]
@@ -144,9 +156,10 @@ flowchart TD
         S4[inventory-service/]
         S5[payment-service/]
         S6[search-service/]
+        S7[ui-portal/]
+        S8[_template/]
     end
 
-    %% Shared
     subgraph SHARED
         C1[config.ts]
         C2[http.ts]
@@ -154,38 +167,46 @@ flowchart TD
         C4[metrics.ts]
         C5[types.d.ts]
     end
-```
 
 ---
 
 ## 4. Component Responsibilities
 
-### **API Gateway**
+API Gateway:
 - Entry point for all client traffic  
 - Routes requests to backend services  
-- Exposes metrics for Prometheus  
+- Exposes /metrics for Prometheus  
+- Used by UI Portal  
 
-### **Microservices**
-Each service follows the same structure:
+Microservices:
+- src/index.ts — main HTTP server  
+- Dockerfile — container build  
+- deployment.yaml — Kubernetes deployment  
+- service.yaml — Kubernetes service  
+- servicemonitor.yaml — Prometheus scraping  
 
-- `src/index.ts` — main HTTP server  
-- `Dockerfile` — container build  
-- `deployment.yaml` — Kubernetes deployment  
-- `service.yaml` — Kubernetes service  
-- `servicemonitor.yaml` — Prometheus scraping  
-
-### **AI SRE Agent**
+AI SRE Agent:
 - Background worker loop  
-- `/metrics` endpoint for Prometheus  
-- `/remediate` endpoint for Alertmanager  
-- Executes auto‑remediation actions  
+- /metrics endpoint for Prometheus  
+- /analyze/incident endpoint  
+- /remediate endpoint for Alertmanager webhook  
+- Executes auto‑remediation actions:
+  - Restart itself  
+  - Scale to 2 replicas  
+  - Scale to 3 replicas  
+  - Escalate to humans  
 - Sends Slack notifications  
 
-### **Observability Stack**
+Observability Stack:
 - Prometheus scrapes metrics  
-- Alertmanager routes alerts  
+- Alertmanager routes alerts to Slack + AI SRE Agent  
 - Grafana visualizes dashboards  
 - Loki + Promtail handle logs  
+
+GitOps (ArgoCD ApplicationSet):
+- Deploys all services automatically  
+- Syncs environments (dev, develop, preprod, main)  
+- Ensures declarative, versioned infrastructure  
 
 ---
 
@@ -210,7 +231,10 @@ This architecture diagram provides a complete view of:
 - Microservices  
 - Observability stack  
 - Namespaces  
+- GitOps structure  
 - Auto‑remediation loop  
 - Repository structure  
+- UI Portal integration  
+- AI SRE Agent integration  
 
-It is designed to be clear, professional, and aligned with real SRE platform documentation.
+It is aligned with the final working platform and CI/CD pipeline.

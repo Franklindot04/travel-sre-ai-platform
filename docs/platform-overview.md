@@ -1,23 +1,19 @@
-# Platform Overview
+# Platform Overview — travel-sre-ai-platform
 
-The **travel-sre-ai-platform** is a cloud-native, SRE-focused demo platform
-designed to showcase production-grade practices for observability, SLOs,
-auto-remediation, and AI-assisted operations.
-
-It simulates a travel booking system composed of multiple microservices, an
-API gateway, and an AI SRE Agent that monitors and heals the platform.
+The travel-sre-ai-platform is a cloud-native, SRE-focused demo platform designed to showcase production-grade practices for observability, SLOs, auto-remediation and AI-assisted operations. It simulates a travel booking system composed of multiple microservices, an API gateway, a UI portal, and an AI SRE Agent that monitors and heals the platform.
 
 ---
 
 ## 1. High-Level Goals
 
-The platform is built to demonstrate:
+The platform demonstrates:
 
-- **Modern SRE practices**: SLOs, burn-rate alerts, error budgets
-- **Deep observability**: metrics, logs, dashboards
-- **Auto-remediation**: self-healing behavior driven by alerts
-- **AI-assisted operations**: an AI SRE Agent that reacts to incidents
-- **Kubernetes-native design**: services, namespaces, ServiceMonitor, etc.
+- Modern SRE practices: SLOs, burn-rate alerts, error budgets  
+- Deep observability: metrics, logs, dashboards  
+- Auto-remediation: self-healing behavior driven by alerts  
+- AI-assisted operations: an AI SRE Agent that reacts to incidents  
+- Kubernetes-native design: Deployments, Services, ServiceMonitor, PrometheusRule  
+- GitOps workflows: ArgoCD ApplicationSet for multi-environment sync  
 
 It is intentionally small but architected like a real production system.
 
@@ -25,66 +21,76 @@ It is intentionally small but architected like a real production system.
 
 ## 2. Core Services
 
-All services run in the `platform` namespace.
+All services run in the platform namespace.
 
-- **API Gateway**
-  - Entry point for client traffic
-  - Routes requests to backend services
-  - Exposes HTTP metrics
+### API Gateway
+- Public entry point  
+- Routes search and booking requests  
+- Exposes /metrics  
+- Consumed by the UI Portal  
 
-- **Booking Service**
-  - Manages bookings and reservations
-  - Represents core business logic
+### Booking Service
+- Manages bookings and reservations  
+- Calls inventory-service and payment-service  
 
-- **Inventory Service**
-  - Manages available seats/rooms/inventory
-  - Used by booking flows
+### Inventory Service
+- Manages available seats/rooms  
+- Reserve and release endpoints  
 
-- **Payment Service**
-  - Simulates payment processing
-  - Can be used to trigger failure scenarios
+### Payment Service
+- Simulates payment authorization  
+- Useful for failure injection  
 
-- **Search Service**
-  - Handles search queries for travel options
+### Search Service
+- Handles search queries for travel options  
+- Provides flight and hotel search  
 
-- **AI SRE Agent**
-  - Background worker that scans metrics/logs
-  - Exposes `/health`, `/metrics`, `/remediate`
-  - Executes auto-remediation actions based on alerts
+### AI SRE Agent
+- Background worker that processes anomaly detection jobs  
+- Exposes /health, /metrics, /analyze/incident, /remediate  
+- Executes auto-remediation actions based on alerts  
+- Sends Slack notifications  
 
-Each service has:
+### UI Portal
+- Frontend SPA for platform visibility  
+- Displays service health, SLOs, dashboards, and incident analysis  
 
-- A Dockerfile
-- A Kubernetes `Deployment`
-- A `Service`
-- A `ServiceMonitor` for Prometheus scraping
+Each service includes:
+
+- Dockerfile  
+- Kubernetes Deployment  
+- Service  
+- ServiceMonitor for Prometheus scraping  
 
 ---
 
 ## 3. Observability Stack
 
-The platform uses a standard Kubernetes observability stack:
+The platform uses a full Kubernetes observability stack:
 
-- **Prometheus**
-  - Scrapes metrics from all services
-  - Evaluates SLO recording rules
-  - Triggers SLO and burn-rate alerts
+### Prometheus
+- Scrapes metrics from all services  
+- Evaluates SLO recording rules  
+- Triggers SLO and burn-rate alerts  
 
-- **Alertmanager**
-  - Routes alerts to:
-    - Slack (`#travel-sre-ai-platform-alerts`)
-    - AI SRE Agent webhook (`/remediate`)
-  - Uses `AlertmanagerConfig` for routing and receivers
+### Alertmanager
+- Routes alerts to:
+  - Slack (#travel-sre-ai-platform-alerts)
+  - AI SRE Agent webhook (/remediate)  
+- Uses AlertmanagerConfig for routing  
 
-- **Grafana**
-  - Dashboards for:
-    - Platform overview
-    - Per-service metrics
-    - AI SRE Agent SLOs and burn-rates
+### Grafana
+Dashboards include:
 
-- **Loki + Promtail**
-  - Centralized logging
-  - Log aggregation for all services
+- Platform Overview  
+- Per-service metrics  
+- AI SRE Agent Dashboard  
+- AI SRE Agent SLO Dashboard  
+- Service Template Dashboard  
+
+### Loki + Promtail
+- Centralized logging  
+- Log aggregation for all services  
 
 ---
 
@@ -92,22 +98,22 @@ The platform uses a standard Kubernetes observability stack:
 
 The AI SRE Agent has explicit SLOs:
 
-- **Availability SLO**
-  - 99% success rate for anomaly scan jobs
-  - Based on `jobs_processed_total` metrics
+### Availability SLO
+- 99% success rate for anomaly scan jobs  
+- Based on jobs_processed_total  
 
-- **Latency SLO**
-  - 95% of anomaly scan jobs under 1.5s
-  - Based on `job_duration_seconds_bucket` histogram
+### Latency SLO
+- 95% of anomaly scan jobs under 1.5s  
+- Based on job_duration_seconds_bucket histogram  
 
 Prometheus recording rules compute:
 
-- Success ratio
-- Latency percentiles
-- Error budget remaining
-- Burn-rates (5m, 30m)
+- Success ratio  
+- Latency percentiles  
+- Error budget remaining  
+- Burn-rates (5m, 30m)  
 
-These are visualized in a dedicated **SLO dashboard**.
+These power the AI SRE Agent SLO dashboard.
 
 ---
 
@@ -115,53 +121,77 @@ These are visualized in a dedicated **SLO dashboard**.
 
 Auto-remediation is driven by SLO burn-rate alerts:
 
-- **Fast burn (5m > 14×)** → restart AI SRE Agent
-- **Slow burn (30m > 3×)** → scale to 2 replicas
-- **Persistent burn (30m > 3× for 30m)** → scale to 3 replicas
-- **Long burn (2h > 1×)** → human escalation
+- Fast burn (5m > 14×) → restart ai-sre-agent  
+- Slow burn (30m > 3×) → scale to 2 replicas  
+- Persistent burn (30m > 3× for 30m) → scale to 3 replicas  
+- Long burn (2h > 1×) → human escalation  
 
-Alertmanager sends these alerts to:
+Alertmanager sends alerts to:
 
-- Slack (for humans)
-- AI SRE Agent `/remediate` (for automation)
+- Slack (human visibility)  
+- AI SRE Agent /remediate (automation)  
 
 The AI SRE Agent then:
 
-- Executes `kubectl` commands to restart/scale
-- Sends Slack notifications for each action
+- Executes kubectl actions  
+- Sends Slack notifications  
+- Logs all actions  
 
-See `docs/auto-remediation.md` for details.
+See docs/auto-remediation.md for full details.
 
 ---
 
 ## 6. Kubernetes Layout
 
-Key Kubernetes resources:
+### Namespaces
 
-- Namespace:
-  - `infra/k8s/namespaces/platform.yaml`
+- platform — all microservices + AI SRE Agent + UI Portal  
+- observability — Prometheus, Alertmanager, Grafana, Loki, Promtail  
 
-- Services (per component):
-  - `infra/k8s/platform/<service>/deployment.yaml`
-  - `infra/k8s/platform/<service>/service.yaml`
-  - `infra/k8s/platform/<service>/servicemonitor.yaml`
+### Platform Services
 
-- Observability:
-  - `infra/observability/prometheus-values.yaml`
-  - `infra/observability/prometheus-rules/*.yaml`
-  - `infra/observability/alertmanager/ai-sre-agent-alerts.yaml`
-  - `infra/observability/grafana-dashboards/*`
+infra/k8s/platform/<service>/
+- deployment.yaml  
+- service.yaml  
+- servicemonitor.yaml  
+
+### Observability
+
+infra/observability/
+- prometheus-values.yaml  
+- prometheus-rules/*.yaml  
+- alertmanager/ai-sre-agent-alerts.yaml  
+- grafana-dashboards/*  
+- loki-values.yaml  
+- promtail-values.yaml  
 
 ---
 
-## 7. Intended Use
+## 7. GitOps Workflow (ArgoCD)
+
+The entire platform is deployed using ArgoCD ApplicationSet:
+
+infra/argocd/applicationset-platform.yaml
+
+Features:
+
+- Multi-environment sync (dev, develop, preprod, main)  
+- Declarative, versioned infrastructure  
+- Automatic reconciliation  
+- Git-driven deployments  
+
+---
+
+## 8. Intended Use
 
 This platform is designed for:
 
-- SRE interviews and portfolio demonstrations
-- Hands-on practice with SLOs and burn-rates
-- Experimenting with auto-remediation patterns
-- Teaching modern observability and incident response
+- SRE interviews and portfolio demonstrations  
+- Hands-on practice with SLOs and burn-rates  
+- Experimenting with auto-remediation patterns  
+- Teaching modern observability and incident response  
+- Demonstrating GitOps workflows  
 
-It is not meant to be feature-complete as a travel product, but rather
-**realistic as an SRE playground**.
+It is not meant to be feature-complete as a travel product, but rather realistic as an SRE playground.
+
+---

@@ -23,7 +23,7 @@ The **AI SRE Agent Platform** is a cloud‑native, SRE‑focused demo environmen
 - GitOps‑friendly dashboards  
 - Kubernetes‑native deployments  
 
-It is designed to demonstrate **how modern SRE teams build, monitor, and operate distributed systems**.
+It is designed to demonstrate **how modern SRE teams build, monitor and operate distributed systems**.
 
 ---
 

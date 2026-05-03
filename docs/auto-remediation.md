@@ -1,6 +1,6 @@
 # AI SRE Agent — Auto‑Remediation System
 
-The AI SRE Agent includes a fully automated remediation engine that reacts to SLO burn‑rate alerts and performs controlled self‑healing actions inside the Kubernetes cluster. This system reduces MTTR, protects error budgets, and ensures platform stability without requiring constant human intervention.
+The AI SRE Agent includes a fully automated remediation engine that reacts to SLO burn‑rate alerts and performs controlled self‑healing actions inside the Kubernetes cluster. This system reduces MTTR, protects error budgets and ensures platform stability without requiring constant human intervention.
 
 ---
 

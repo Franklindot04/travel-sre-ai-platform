@@ -204,7 +204,8 @@ Runs inside the platform namespace.
 
 # 📂 Repository Structure
 
-```markdown
+```
+├── LICENSE
 ├── README.md
 ├── docs
 │   ├── apis.md
@@ -221,27 +222,109 @@ Runs inside the platform namespace.
 │   │   │   └── platform.yaml
 │   │   └── platform
 │   │       ├── ai-sre-agent
+│   │       │   ├── deployment.yaml
+│   │       │   ├── service.yaml
+│   │       │   └── servicemonitor.yaml
 │   │       ├── api-gateway
+│   │       │   ├── deployment.yaml
+│   │       │   ├── service.yaml
+│   │       │   └── servicemonitor.yaml
 │   │       ├── booking-service
+│   │       │   ├── deployment.yaml
+│   │       │   ├── service.yaml
+│   │       │   └── servicemonitor.yaml
 │   │       ├── inventory-service
+│   │       │   ├── deployment.yaml
+│   │       │   ├── service.yaml
+│   │       │   └── servicemonitor.yaml
 │   │       ├── payment-service
-│   │       ├── search-service
-│   │       └── ui-portal
+│   │       │   ├── deployment.yaml
+│   │       │   ├── service.yaml
+│   │       │   └── servicemonitor.yaml
+│   │       └── search-service
+│   │           ├── deployment.yaml
+│   │           ├── service.yaml
+│   │           └── servicemonitor.yaml
 │   └── observability
 │       ├── alertmanager
+│       │   └── ai-sre-agent-alerts.yaml
 │       ├── grafana-dashboards
-│       ├── prometheus-rules
-│       ├── prometheus-values.yaml
+│       │   ├── json
+│       │   │   ├── ai-sre-agent-slo-dashboard.json
+│       │   │   ├── api-gateway.json
+│       │   │   ├── platform-overview.json
+│       │   │   └── service-template.json
+│       │   └── yaml
+│       │       ├── ai-sre-agent-dashboard.yaml
+│       │       ├── ai-sre-agent-slo-dashboard-configmap.yaml
+│       │       ├── platform-overview-configmap.yaml
+│       │       └── service-template-configmap.yaml
 │       ├── loki-values.yaml
+│       ├── prometheus-rules
+│       │   ├── ai-sre-agent-rules.yaml
+│       │   ├── ai-sre-agent-slo-alerts.yaml
+│       │   └── ai-sre-agent-slo-rules.yaml
+│       ├── prometheus-values.yaml
 │       └── promtail-values.yaml
 ├── services
+│   ├── _template
+│   │   ├── package.json
+│   │   ├── src
+│   │   │   └── index.ts
+│   │   └── tsconfig.json
 │   ├── ai-sre-agent
+│   │   ├── Dockerfile
+│   │   ├── package-lock.json
+│   │   ├── package.json
+│   │   ├── src
+│   │   │   ├── index.ts
+│   │   │   ├── remediation.ts
+│   │   │   ├── slack.ts
+│   │   │   ├── worker-metrics.ts
+│   │   │   └── worker.ts
+│   │   └── tsconfig.json
 │   ├── api-gateway
+│   │   ├── Dockerfile
+│   │   ├── package-lock.json
+│   │   ├── package.json
+│   │   ├── src
+│   │   │   └── index.ts
+│   │   └── tsconfig.json
 │   ├── booking-service
+│   │   ├── Dockerfile
+│   │   ├── package-lock.json
+│   │   ├── package.json
+│   │   ├── src
+│   │   │   └── index.ts
+│   │   └── tsconfig.json
 │   ├── inventory-service
+│   │   ├── Dockerfile
+│   │   ├── package-lock.json
+│   │   ├── package.json
+│   │   ├── src
+│   │   │   └── index.ts
+│   │   └── tsconfig.json
 │   ├── payment-service
+│   │   ├── Dockerfile
+│   │   ├── package-lock.json
+│   │   ├── package.json
+│   │   ├── src
+│   │   │   └── index.ts
+│   │   └── tsconfig.json
 │   ├── search-service
+│   │   ├── Dockerfile
+│   │   ├── package-lock.json
+│   │   ├── package.json
+│   │   ├── src
+│   │   │   └── index.ts
+│   │   └── tsconfig.json
 │   └── ui-portal
+│       ├── Dockerfile
+│       ├── package-lock.json
+│       ├── package.json
+│       ├── src
+│       │   └── index.ts
+│       └── tsconfig.json
 └── shared
     ├── config.ts
     ├── http.ts

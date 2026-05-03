@@ -178,7 +178,6 @@ Alertmanager POSTs alerts to `/remediate`.
 ## 📂 Repository Structure
 
 ```text
-.
 ├── README.md
 ├── docs
 │   ├── apis.md

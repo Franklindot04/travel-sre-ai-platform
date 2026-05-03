@@ -1,27 +1,29 @@
 # Architecture Overview — travel-sre-ai-platform
 
-## 1. High‑Level System Architecture
+## 1. High-Level System Architecture
 
-The platform is a Kubernetes‑native, microservices‑based travel booking system.  
+The platform is a Kubernetes-native, microservices-based travel booking system.  
 All services communicate internally using ClusterIP Services, with the API Gateway acting as the only public entrypoint.
 
 Mermaid (paste this into a ```mermaid block inside your repo):
 
+```mermaid
 flowchart TD
-A[Client / Browser / Mobile] --> G[api-gateway]
+    A[Client / Browser / Mobile] --> G[api-gateway]
 
-G --> S1[search-service]
-G --> B1[booking-service]
+    G --> S1[search-service]
+    G --> B1[booking-service]
 
-B1 --> I1[inventory-service]
-B1 --> P1[payment-service]
+    B1 --> I1[inventory-service]
+    B1 --> P1[payment-service]
 
-subgraph UI[ui-portal]
-U1[Frontend SPA]
-end
+    subgraph UI[ui-portal]
+        U1[Frontend SPA]
+    end
 
-A --> U1
-U1 --> G
+    A --> U1
+    U1 --> G
+```
 
 ### Responsibilities
 
@@ -44,6 +46,8 @@ inventory-service
 
 payment-service  
 - Simulates payment authorization  
+
+--- 
 
 ---
 

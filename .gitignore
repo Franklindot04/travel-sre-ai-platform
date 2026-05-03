@@ -13,3 +13,4 @@ tmp/
 out/
 *.tsbuildinfo
 services/ui-portal/node_modules/
+.vscode/

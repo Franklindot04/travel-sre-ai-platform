@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: booking-service
-          image: ghcr.io/franklindot04/booking-service:v1.0.17
+          image: ghcr.io/franklindot04/booking-service:v1.0.18
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3004

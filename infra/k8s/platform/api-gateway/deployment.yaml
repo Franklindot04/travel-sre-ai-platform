@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: api-gateway
-          image: ghcr.io/franklindot04/api-gateway:v1.0.6
+          image: ghcr.io/franklindot04/api-gateway:v1.0.7
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000

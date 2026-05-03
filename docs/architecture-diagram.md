@@ -60,35 +60,35 @@ W2 -->|Restart / Scale / Escalate| K8S[(Kubernetes API)]
 
 Platform namespace (`platform`):
 
-infra/k8s/platform/
-├── ai-sre-agent
-├── api-gateway
-├── booking-service
-├── inventory-service
-├── payment-service
-├── search-service
-└── ui-portal
+    infra/k8s/platform/
+    ├── ai-sre-agent
+    ├── api-gateway
+    ├── booking-service
+    ├── inventory-service
+    ├── payment-service
+    ├── search-service
+    └── ui-portal
 
 Observability namespace (`observability`):
 
-infra/observability/
-├── alertmanager
-│   └── ai-sre-agent-alerts.yaml
-├── grafana-dashboards
-│   ├── json
-│   └── yaml
-├── prometheus-rules
-│   ├── ai-sre-agent-rules.yaml
-│   ├── ai-sre-agent-slo-alerts.yaml
-│   └── ai-sre-agent-slo-rules.yaml
-├── prometheus-values.yaml
-├── loki-values.yaml
-└── promtail-values.yaml
+    infra/observability/
+    ├── alertmanager
+    │   └── ai-sre-agent-alerts.yaml
+    ├── grafana-dashboards
+    │   ├── json
+    │   └── yaml
+    ├── prometheus-rules
+    │   ├── ai-sre-agent-rules.yaml
+    │   ├── ai-sre-agent-slo-alerts.yaml
+    │   └── ai-sre-agent-slo-rules.yaml
+    ├── prometheus-values.yaml
+    ├── loki-values.yaml
+    └── promtail-values.yaml
 
 GitOps (ArgoCD ApplicationSet):
 
-infra/argocd/
-└── applicationset-platform.yaml
+    infra/argocd/
+    └── applicationset-platform.yaml
 
 ---
 

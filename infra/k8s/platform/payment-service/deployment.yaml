@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: payment-service
-          image: ghcr.io/franklindot04/payment-service:v1.0.7
+          image: ghcr.io/franklindot04/payment-service:v1.0.9
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3003

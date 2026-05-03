@@ -53,33 +53,33 @@ payment-service
 
 The platform includes a full observability and reliability stack:
 
-[Kubernetes Cluster]  
-   ├── Microservices (6 total)  
-   ├── Observability Stack  
-   │     ├── Prometheus (metrics)  
-   │     ├── Grafana (dashboards)  
-   │     ├── Loki (logs)  
-   │     └── Promtail (log shipping)  
-   └── AI SRE Agent  
-         ├── Worker loop  
-         ├── /metrics endpoint  
-         ├── /analyze/incident API  
-         ├── /remediate webhook for Alertmanager  
-         └── Slack integration  
+    [Kubernetes Cluster]
+       ├── Microservices (6 total)
+       ├── Observability Stack
+       │     ├── Prometheus (metrics)
+       │     ├── Grafana (dashboards)
+       │     ├── Loki (logs)
+       │     └── Promtail (log shipping)
+       └── AI SRE Agent
+             ├── Worker loop
+             ├── /metrics endpoint
+             ├── /analyze/incident API
+             ├── /remediate webhook for Alertmanager
+             └── Slack integration
 
 ### Observability Features
 
 - ServiceMonitor for each microservice  
 - PrometheusRule for:  
-  - service alerts  
-  - SLO burn-rate alerts  
-  - latency + availability recording rules  
+    - service alerts  
+    - SLO burn‑rate alerts  
+    - latency + availability recording rules  
 
 - Grafana dashboards (stored in ConfigMaps):  
-  - Platform Overview  
-  - AI SRE Agent Dashboard  
-  - AI SRE Agent SLO Dashboard  
-  - Service Template Dashboard  
+    - Platform Overview  
+    - AI SRE Agent Dashboard  
+    - AI SRE Agent SLO Dashboard  
+    - Service Template Dashboard  
 
 - Loki + Promtail for log aggregation
   

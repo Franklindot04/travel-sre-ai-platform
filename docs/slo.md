@@ -11,7 +11,7 @@
 
 The **travel-sre-ai-platform** powers a distributed travel booking ecosystem consisting of search, inventory, booking, payments, API gateway and the AI SRE Agent. In the travel industry, reliability directly impacts revenue and customer trust. A slow or unavailable booking flow results in immediate customer abandonment and lost sales.
 
-This document defines the **Service Level Objectives (SLOs)**, **error budgets**, **burn‑rate alerting**, and **governance model** used to ensure the platform meets the reliability expectations of a real-world travel agency. These SLOs are enforced through Prometheus recording rules, multi-window burn-rate alerts, Grafana dashboards and AI-driven SRE automation.
+This document defines the **Service Level Objectives (SLOs)**, **error budgets**, **burn‑rate alerting** and **governance model** used to ensure the platform meets the reliability expectations of a real-world travel agency. These SLOs are enforced through Prometheus recording rules, multi-window burn-rate alerts, Grafana dashboards and AI-driven SRE automation.
 
 ---
 
@@ -22,7 +22,7 @@ The platform defines two primary SLOs for the AI SRE Agent worker.
 ## 2.1 Availability SLO  
 **99% of anomaly scan jobs must succeed.**
 
-This ensures the AI SRE Agent reliably performs anomaly detection, log analysis, metric correlation, and incident summarization.
+This ensures the AI SRE Agent reliably performs anomaly detection, log analysis, metric correlation and incident summarization.
 
 ## 2.2 Latency SLO  
 **95% of anomaly scan jobs must complete in < 1.5 seconds.**

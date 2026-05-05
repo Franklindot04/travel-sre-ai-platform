@@ -24,7 +24,7 @@ Client (Browser / Mobile / API Consumer)
 ### Responsibilities
 
 - **api-gateway**  
-  Routes all client traffic to internal services. Handles search, booking, and orchestration.
+  Routes all client traffic to internal services. Handles search, booking and orchestration.
 
 - **search-service**  
   Provides flight and hotel search endpoints.

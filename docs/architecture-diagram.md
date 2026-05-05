@@ -1,7 +1,7 @@
 # Architecture Diagram
 
 This document provides a high‑level and detailed view of the platform
-architecture, including microservices, observability stack, namespaces, and the
+architecture, including microservices, observability stack, namespaces and the
 AI SRE Agent auto‑remediation loop.
 
 ---

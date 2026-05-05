@@ -2,10 +2,10 @@
 
 The **travel-sre-ai-platform** is a cloud-native, SRE-focused demo platform
 designed to showcase production-grade practices for observability, SLOs,
-auto-remediation, and AI-assisted operations.
+auto-remediation and AI-assisted operations.
 
 It simulates a travel booking system composed of multiple microservices, an
-API gateway, and an AI SRE Agent that monitors and heals the platform.
+API gateway and an AI SRE Agent that monitors and heals the platform.
 
 ---
 

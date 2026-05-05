@@ -2,7 +2,7 @@
 
 The AI SRE Agent includes a fully automated remediation engine that reacts to
 SLO burn‑rate alerts and performs controlled self‑healing actions inside the
-Kubernetes cluster. This system reduces MTTR, protects error budgets, and
+Kubernetes cluster. This system reduces MTTR, protects error budgets and
 ensures platform stability without requiring constant human intervention.
 
 ---
@@ -25,7 +25,7 @@ which action to perform:
 - Escalate to humans via Slack  
 
 This mirrors the remediation patterns used by large SRE organizations such as
-Google, Uber, and Expedia.
+Google, Uber and Expedia.
 
 ---
 

@@ -387,5 +387,4 @@ This platform demonstrates **real‑world SRE engineering**:
 - Kubernetes  
 - Observability  
 
-It is a **portfolio‑grade**, and **production‑style** SRE platform.
 

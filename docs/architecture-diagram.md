@@ -4,7 +4,7 @@ This document provides a high‑level and detailed view of the platform architec
 
 ---
 
-## 1. High‑Level System Architecture (Mermaid)
+## 1. High‑Level System Architecture
 
 ~~~mermaid
 flowchart TD
@@ -92,7 +92,7 @@ GitOps (ArgoCD ApplicationSet):
 
 ---
 
-## 3. Detailed Project Structure Diagram (Mermaid)
+## 3. Detailed Project Structure Diagram
 
 Mermaid definition (paste into a ```mermaid block in your editor):
 

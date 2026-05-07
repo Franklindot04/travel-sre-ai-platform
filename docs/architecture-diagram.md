@@ -94,8 +94,6 @@ GitOps (ArgoCD ApplicationSet):
 
 ## 3. Detailed Project Structure Diagram
 
-Mermaid definition (paste into a ```mermaid block in your editor):
-
 flowchart TD
 
     subgraph ROOT[Repository Root]

@@ -1,6 +1,6 @@
 # Architecture Diagram
 
-This document provides a high‑level and detailed view of the platform architecture, including microservices, observability stack, namespaces, GitOps structure, and the AI SRE Agent auto‑remediation loop.
+This document provides a high‑level and detailed view of the platform architecture, including microservices, observability stack, namespaces, GitOps structure and the AI SRE Agent auto‑remediation loop.
 
 ---
 

@@ -5,8 +5,6 @@
 The platform is a Kubernetes-native, microservices-based travel booking system.  
 All services communicate internally using ClusterIP Services, with the API Gateway acting as the only public entrypoint.
 
-Mermaid (paste this into a ```mermaid block inside your repo):
-
 ```mermaid
 flowchart TD
     A[Client / Browser / Mobile] --> G[api-gateway]

@@ -208,7 +208,8 @@ export default function HomePage() {
 
         {/* Popular Destinations */}
         <section>
-          <h2 className="text-2xl font-bold mb-5">
+          <h2 className="text-2xl font-bold mb-5git status
+">
             Popular Destinations
           </h2>
 

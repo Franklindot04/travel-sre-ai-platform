@@ -184,4 +184,4 @@ The ui-portal is a frontend SPA that consumes:
 
 ---
 
-This document reflects the final architecture of the platform, aligned with the repo structure, GitOps model, observability stack, and AI SRE Agent capabilities.
+This document reflects the final architecture of the platform, aligned with the repo structure, GitOps model, observability stack and AI SRE Agent capabilities.

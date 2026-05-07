@@ -1,12 +1,12 @@
 # Architecture Diagram
 
 This document provides a high‑level and detailed view of the platform
-architecture, including microservices, observability stack, namespaces, and the
+architecture, including microservices, observability stack, namespaces and the
 AI SRE Agent auto‑remediation loop.
 
 ---
 
-## 1. High‑Level System Architecture (Mermaid)
+## 1. High‑Level System Architecture
 
 ```mermaid
 flowchart TD
@@ -79,7 +79,7 @@ infra/observability/
 
 ---
 
-## 3. Detailed Project Structure Diagram (Mermaid)
+## 3. Detailed Project Structure Diagram
 
 This diagram mirrors your actual repo tree and shows how components relate.
 

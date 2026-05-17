@@ -108,22 +108,6 @@ export default function HomePage() {
           </div>
 
           <div className="mt-10 rounded-3xl border border-white/20 bg-white/95 p-4 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur-xl dark:bg-slate-950/90 sm:p-6">
-            <div className="mb-4 flex flex-wrap items-center gap-3 border-b border-slate-200 pb-4 text-sm dark:border-slate-800">
-              {["Flights", "Hotels", "Car rental", "Airport taxis", "Cruise", "Attractions"].map(
-                (label, index) => (
-                  <button
-                    key={label}
-                    className={`rounded-full px-3 py-1.5 font-medium transition ${
-                      index === 0
-                        ? "bg-sky-100 text-slate-950 dark:bg-sky-900/60 dark:text-white"
-                        : "text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
-                    }`}
-                  >
-                    {label}
-                  </button>
-                )
-              )}
-            </div>
             <SearchForm />
           </div>
         </div>

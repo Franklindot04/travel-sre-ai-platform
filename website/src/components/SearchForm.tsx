@@ -231,13 +231,31 @@ export default function SearchForm() {
             <label className="block text-xs font-bold uppercase text-slate-700 dark:text-slate-200">
               {field.label}
             </label>
-            <input
-              value={currentValues[field.id] || ""}
-              onChange={(event) => updateValue(field.id, event.target.value)}
-              placeholder={field.placeholder}
-              type={field.type || "text"}
-              className="travel-date-input mt-1 w-full rounded-md border border-slate-400 bg-white px-3 py-2 text-sm font-medium text-slate-950 shadow-sm outline-none transition placeholder:text-slate-600 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/30 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-400 dark:focus:border-blue-400"
-            />
+            <div className="relative mt-1">
+              <input
+                value={currentValues[field.id] || ""}
+                onChange={(event) => updateValue(field.id, event.target.value)}
+                placeholder={field.placeholder}
+                type={field.type || "text"}
+                className={`w-full rounded-md border border-slate-400 bg-white px-3 py-2 text-sm font-medium text-slate-950 shadow-sm outline-none transition placeholder:text-slate-600 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/30 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-400 dark:focus:border-blue-400 ${
+                  field.type === "date" || field.type === "datetime-local"
+                    ? "travel-date-input pr-11"
+                    : ""
+                }`}
+              />
+              {field.type === "date" || field.type === "datetime-local" ? (
+                <svg
+                  aria-hidden="true"
+                  className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-700 dark:text-slate-100"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path d="M8 2v4M16 2v4M3 10h18M5 5h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2z" />
+                </svg>
+              ) : null}
+            </div>
           </div>
         ))}
 

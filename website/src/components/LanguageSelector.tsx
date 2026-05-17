@@ -40,7 +40,7 @@ export default function LanguageSelector() {
         aria-expanded={open}
         aria-haspopup="menu"
       >
-        <span aria-hidden="true">🌐</span>
+        <span aria-hidden="true">{selectedLanguage.flag}</span>
         <span>{selectedLanguage.label}</span>
       </button>
 

@@ -4,6 +4,7 @@ import "./globals.css";
 import { Providers } from "./providers";
 import ThemeToggle from "@/components/ThemeToggle";
 import LanguageSelector from "@/components/LanguageSelector";
+import CurrencySelector from "@/components/CurrencySelector";
 
 export const metadata: Metadata = {
   title: "Travel SRE AI Platform",
@@ -43,9 +44,7 @@ export default function RootLayout({
                 >
                   Bookings
                 </Link>
-                <button className="rounded-md px-2 py-1 text-slate-200 transition hover:bg-white/10 hover:text-sky-200">
-                  EUR
-                </button>
+                <CurrencySelector />
                 <LanguageSelector />
                 <button className="hidden rounded-md px-2 py-1 text-slate-200 transition hover:bg-white/10 hover:text-sky-200 sm:inline-flex">
                   Become a host

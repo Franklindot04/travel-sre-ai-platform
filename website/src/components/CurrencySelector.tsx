@@ -2,19 +2,19 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const languages = [
-  { label: "English", flag: "🇬🇧" },
-  { label: "French", flag: "🇫🇷" },
-  { label: "Spanish", flag: "🇪🇸" },
-  { label: "German", flag: "🇩🇪" },
-  { label: "Dutch", flag: "🇳🇱" },
-  { label: "Portuguese", flag: "🇵🇹" },
-  { label: "Italian", flag: "🇮🇹" },
+const currencies = [
+  { code: "EUR", symbol: "€" },
+  { code: "USD", symbol: "$" },
+  { code: "GBP", symbol: "£" },
+  { code: "CAD", symbol: "$" },
+  { code: "AUD", symbol: "$" },
+  { code: "JPY", symbol: "¥" },
+  { code: "CHF", symbol: "Fr" },
 ];
 
-export default function LanguageSelector() {
+export default function CurrencySelector() {
   const [open, setOpen] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState(languages[0]);
+  const [selectedCurrency, setSelectedCurrency] = useState(currencies[0]);
   const selectorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -40,28 +40,28 @@ export default function LanguageSelector() {
         aria-expanded={open}
         aria-haspopup="menu"
       >
-        <span aria-hidden="true">🌐</span>
-        <span>{selectedLanguage.label}</span>
+        <span>{selectedCurrency.code}</span>
+        <span className="text-slate-300">{selectedCurrency.symbol}</span>
       </button>
 
       {open ? (
         <div
           role="menu"
-          className="absolute right-0 z-30 mt-2 w-44 overflow-hidden rounded-lg border border-slate-200 bg-white py-1 text-sm text-slate-900 shadow-xl dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+          className="absolute right-0 z-30 mt-2 w-36 overflow-hidden rounded-lg border border-slate-200 bg-white py-1 text-sm text-slate-900 shadow-xl dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
         >
-          {languages.map((language) => (
+          {currencies.map((currency) => (
             <button
-              key={language.label}
+              key={currency.code}
               type="button"
               role="menuitem"
               onClick={() => {
-                setSelectedLanguage(language);
+                setSelectedCurrency(currency);
                 setOpen(false);
               }}
-              className="flex w-full items-center gap-2 px-3 py-2 text-left transition hover:bg-slate-100 dark:hover:bg-slate-800"
+              className="flex w-full items-center justify-between gap-3 px-3 py-2 text-left transition hover:bg-slate-100 dark:hover:bg-slate-800"
             >
-              <span aria-hidden="true">{language.flag}</span>
-              {language.label}
+              <span>{currency.code}</span>
+              <span className="font-semibold">{currency.symbol}</span>
             </button>
           ))}
         </div>

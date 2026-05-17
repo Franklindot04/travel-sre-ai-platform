@@ -62,3 +62,15 @@ body {
 .text-muted {
   color: var(--muted);
 }
+
+.travel-date-input::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(22%) sepia(28%) saturate(954%) hue-rotate(176deg)
+    brightness(94%) contrast(90%);
+  opacity: 1;
+}
+
+.dark .travel-date-input::-webkit-calendar-picker-indicator {
+  filter: invert(88%) sepia(16%) saturate(355%) hue-rotate(176deg)
+    brightness(99%) contrast(91%);
+}

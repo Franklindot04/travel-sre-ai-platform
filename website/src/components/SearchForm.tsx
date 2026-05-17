@@ -236,7 +236,7 @@ export default function SearchForm() {
               onChange={(event) => updateValue(field.id, event.target.value)}
               placeholder={field.placeholder}
               type={field.type || "text"}
-              className="mt-1 w-full rounded-md border border-slate-400 bg-white px-3 py-2 text-sm font-medium text-slate-950 shadow-sm outline-none transition placeholder:text-slate-600 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/30 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-400 dark:focus:border-blue-400"
+              className="travel-date-input mt-1 w-full rounded-md border border-slate-400 bg-white px-3 py-2 text-sm font-medium text-slate-950 shadow-sm outline-none transition placeholder:text-slate-600 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/30 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-400 dark:focus:border-blue-400"
             />
           </div>
         ))}

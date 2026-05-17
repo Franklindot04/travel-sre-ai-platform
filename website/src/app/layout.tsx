@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
 import { Providers } from "./providers";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export const metadata: Metadata = {
   title: "Travel SRE AI Platform",
@@ -15,10 +16,62 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-100">
+      <body className="min-h-screen bg-background text-foreground">
         <Providers>
-          <Navbar />
-          <main className="mx-auto max-w-6xl px-4 py-6">
+          <header className="w-full bg-slate-950 text-white shadow-lg">
+            <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+              <Link href="/" className="flex items-baseline gap-3">
+                <span className="text-2xl font-bold tracking-tight">
+                  Travel SRE AI
+                </span>
+                <span className="hidden text-sm text-slate-300 sm:inline">
+                  A demo travel platform
+                </span>
+              </Link>
+
+              <div className="flex flex-wrap items-center gap-3 text-sm lg:gap-5">
+                <Link
+                  href="/search"
+                  className="rounded-md px-2 py-1 text-slate-200 transition hover:bg-white/10 hover:text-sky-200"
+                >
+                  Search
+                </Link>
+                <Link
+                  href="/booking"
+                  className="rounded-md px-2 py-1 text-slate-200 transition hover:bg-white/10 hover:text-sky-200"
+                >
+                  Bookings
+                </Link>
+                <button className="rounded-md px-2 py-1 text-slate-200 transition hover:bg-white/10 hover:text-sky-200">
+                  EUR
+                </button>
+                <button className="flex items-center gap-1 rounded-md px-2 py-1 text-slate-200 transition hover:bg-white/10 hover:text-sky-200">
+                  <svg
+                    className="h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M12 3v18m9-9H3" />
+                  </svg>
+                  <span>EN</span>
+                </button>
+                <button className="hidden rounded-md px-2 py-1 text-slate-200 transition hover:bg-white/10 hover:text-sky-200 sm:inline-flex">
+                  Become a host
+                </button>
+                <button className="rounded-lg bg-white px-4 py-2 font-semibold text-slate-950 transition hover:bg-slate-100">
+                  Register
+                </button>
+                <button className="rounded-lg bg-sky-600 px-4 py-2 font-semibold text-white transition hover:bg-sky-500">
+                  Log in
+                </button>
+                <ThemeToggle />
+              </div>
+            </div>
+          </header>
+
+          <main className="mx-auto max-w-7xl px-4 py-6 lg:px-8">
             {children}
           </main>
         </Providers>

@@ -24,8 +24,14 @@ const tabs: Tab[] = [
     id: "flights",
     label: "Flights",
     icon: (
-      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
-        <path d="M2 16l2 1 7-4 3 7 2-1-2-8 8-2-1-2-7 1-4-6-2 1 2 7-6 3z" />
+      <svg
+        viewBox="0 0 24 24"
+        className="h-5 w-5"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
+        <path d="M16 2l6 6-8 3-3 8-3-3 2-5-5 2-3-3 8-3z" />
       </svg>
     ),
     fields: [
@@ -40,12 +46,12 @@ const tabs: Tab[] = [
     icon: (
       <svg
         viewBox="0 0 24 24"
-        className="h-4 w-4"
+        className="h-5 w-5"
         fill="none"
         stroke="currentColor"
         strokeWidth="2"
       >
-        <path d="M3 11h18v8M5 11V6h6v5M13 11V7h6v4M3 19h18" />
+        <path d="M3 21V8a2 2 0 012-2h14a2 2 0 012 2v13M7 21v-6h10v6M7 10h.01M12 10h.01M17 10h.01" />
       </svg>
     ),
     fields: [
@@ -61,12 +67,12 @@ const tabs: Tab[] = [
     icon: (
       <svg
         viewBox="0 0 24 24"
-        className="h-4 w-4"
+        className="h-5 w-5"
         fill="none"
         stroke="currentColor"
         strokeWidth="2"
       >
-        <path d="M4 14l1.5-5h13L20 14M5 18h14M7 18a2 2 0 104 0M13 18a2 2 0 104 0M3 14h18v4H3z" />
+        <path d="M5 17h14M6 17a2 2 0 104 0M14 17a2 2 0 104 0M4 13l2-5h12l2 5M3 13h18v4H3z" />
       </svg>
     ),
     fields: [
@@ -81,12 +87,12 @@ const tabs: Tab[] = [
     icon: (
       <svg
         viewBox="0 0 24 24"
-        className="h-4 w-4"
+        className="h-5 w-5"
         fill="none"
         stroke="currentColor"
         strokeWidth="2"
       >
-        <path d="M5 11l1.5-4h11L19 11M4 15h16M6 19a2 2 0 104 0M14 19a2 2 0 104 0M3 11h18v8H3z" />
+        <path d="M4 13l2-5h12l2 5M5 17h14M7 17a2 2 0 104 0M13 17a2 2 0 104 0M3 13h18v4H3zM9 5h6" />
       </svg>
     ),
     fields: [
@@ -101,12 +107,12 @@ const tabs: Tab[] = [
     icon: (
       <svg
         viewBox="0 0 24 24"
-        className="h-4 w-4"
+        className="h-5 w-5"
         fill="none"
         stroke="currentColor"
         strokeWidth="2"
       >
-        <path d="M4 16l8 4 8-4 1-5H3l1 5zM8 11V6h8v5M10 6V3h4v3" />
+        <path d="M4 17l8 4 8-4 1-6H3l1 6zM8 11V6h8v5M10 6V3h4v3M7 15h10" />
       </svg>
     ),
     fields: [
@@ -121,7 +127,7 @@ const tabs: Tab[] = [
     icon: (
       <svg
         viewBox="0 0 24 24"
-        className="h-4 w-4"
+        className="h-5 w-5"
         fill="none"
         stroke="currentColor"
         strokeWidth="2"
@@ -138,12 +144,29 @@ const tabs: Tab[] = [
 ];
 
 const defaultValues: Record<TravelSearchType, Record<string, string>> = {
-  flights: { origin: "", destination: "", date: "" },
-  hotels: { city: "", checkIn: "", checkOut: "", guests: "" },
-  cars: { pickupLocation: "", pickupDate: "", returnDate: "" },
-  taxis: { pickup: "", dropoff: "", pickupTime: "" },
-  cruises: { departurePort: "", destination: "", departureDate: "" },
-  attractions: { city: "", date: "", guests: "" },
+  flights: { origin: "LON", destination: "NYC", date: "2026-06-01" },
+  hotels: {
+    city: "Paris",
+    checkIn: "2026-06-01",
+    checkOut: "2026-06-05",
+    guests: "2 adults",
+  },
+  cars: {
+    pickupLocation: "Heathrow Airport",
+    pickupDate: "2026-06-01",
+    returnDate: "2026-06-05",
+  },
+  taxis: {
+    pickup: "JFK Airport",
+    dropoff: "Manhattan",
+    pickupTime: "2026-06-01T10:30",
+  },
+  cruises: {
+    departurePort: "Barcelona",
+    destination: "Greek Islands",
+    departureDate: "2026-06-01",
+  },
+  attractions: { city: "Rome", date: "2026-06-01", guests: "2 adults" },
 };
 
 export default function SearchForm() {
@@ -179,7 +202,7 @@ export default function SearchForm() {
 
   return (
     <div>
-      <div className="mb-4 flex flex-wrap items-center gap-3 border-b border-slate-200 pb-4 text-sm dark:border-slate-800">
+      <div className="mb-4 flex flex-wrap items-center gap-3 border-b border-slate-300 pb-4 text-sm dark:border-slate-700">
         {tabs.map((tab) => {
           const isActive = tab.id === activeTab;
 
@@ -188,10 +211,10 @@ export default function SearchForm() {
               key={tab.id}
               type="button"
               onClick={() => setActiveTab(tab.id)}
-              className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 font-medium transition ${
+              className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 font-semibold transition ${
                 isActive
-                  ? "bg-sky-100 text-slate-950 dark:bg-sky-900/70 dark:text-white"
-                  : "text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
+                  ? "border-sky-300 bg-sky-100 text-slate-950 shadow-sm dark:border-sky-700 dark:bg-sky-900/70 dark:text-white"
+                  : "border-transparent text-slate-700 hover:border-slate-300 hover:bg-slate-100 dark:text-slate-200 dark:hover:border-slate-700 dark:hover:bg-slate-800"
               }`}
               aria-pressed={isActive}
             >
@@ -205,7 +228,7 @@ export default function SearchForm() {
       <form onSubmit={onSubmit} className="grid gap-4 lg:grid-cols-4">
         {currentTab.fields.map((field) => (
           <div key={field.id} className="lg:col-span-1">
-            <label className="block text-xs font-semibold uppercase text-muted">
+            <label className="block text-xs font-bold uppercase text-slate-700 dark:text-slate-200">
               {field.label}
             </label>
             <input
@@ -213,7 +236,7 @@ export default function SearchForm() {
               onChange={(event) => updateValue(field.id, event.target.value)}
               placeholder={field.placeholder}
               type={field.type || "text"}
-              className="input mt-1 w-full"
+              className="mt-1 w-full rounded-md border border-slate-400 bg-white px-3 py-2 text-sm font-medium text-slate-950 shadow-sm outline-none transition placeholder:text-slate-600 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/30 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-400 dark:focus:border-blue-400"
             />
           </div>
         ))}

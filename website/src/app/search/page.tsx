@@ -32,6 +32,19 @@ type SearchParams = {
 };
 
 function normalizeType(type?: string): TravelSearchType {
+  const aliases: Record<string, TravelSearchType> = {
+    flight: "flights",
+    hotel: "hotels",
+    car: "cars",
+    "car-rental": "cars",
+    "car rental": "cars",
+    taxi: "taxis",
+    "airport-taxis": "taxis",
+    "airport taxis": "taxis",
+    cruise: "cruises",
+    attraction: "attractions",
+  };
+  const normalizedType = (type || "").toLowerCase();
   const supportedTypes: TravelSearchType[] = [
     "flights",
     "hotels",
@@ -41,8 +54,10 @@ function normalizeType(type?: string): TravelSearchType {
     "attractions",
   ];
 
-  return supportedTypes.includes(type as TravelSearchType)
-    ? (type as TravelSearchType)
+  return supportedTypes.includes(normalizedType as TravelSearchType)
+    ? (normalizedType as TravelSearchType)
+    : aliases[normalizedType]
+      ? aliases[normalizedType]
     : "flights";
 }
 
@@ -55,17 +70,6 @@ function titleForType(type: TravelSearchType) {
     cruises: "Cruise results",
     attractions: "Attraction results",
   }[type];
-}
-
-function missingParams(message: string) {
-  return (
-    <div className="card p-6">
-      <h1 className="text-xl font-semibold text-red-700 dark:text-red-300">
-        Missing search parameters
-      </h1>
-      <p className="mt-2 text-muted">{message}</p>
-    </div>
-  );
 }
 
 export default async function SearchPage({
@@ -82,8 +86,25 @@ export default async function SearchPage({
     const date = params.date || "";
 
     if (!origin || !destination || !date) {
-      return missingParams(
-        "Please enter origin, destination, and date for flight search."
+      const flights = await searchFlights({
+        origin: origin || "LON",
+        destination: destination || "NYC",
+        date: date || "2026-06-01",
+      });
+
+      return (
+        <div className="space-y-8">
+          <ResultsHeader
+            title="LON to NYC"
+            label={titleForType(type)}
+            description="Showing mock flight results because search parameters were incomplete."
+          />
+          <ResultSection title="Flights" count={flights.results.length}>
+            {flights.results.map((flight) => (
+              <FlightCard key={flight.flightId} flight={flight} />
+            ))}
+          </ResultSection>
+        </div>
       );
     }
 
@@ -111,8 +132,25 @@ export default async function SearchPage({
     const checkOut = params.checkOut || checkIn;
 
     if (!city || !checkIn || !checkOut) {
-      return missingParams(
-        "Please enter city, check-in, and check-out dates for hotel search."
+      const hotels = await searchHotels({
+        city: city || "Paris",
+        checkIn: checkIn || "2026-06-01",
+        checkOut: checkOut || "2026-06-05",
+      });
+
+      return (
+        <div className="space-y-8">
+          <ResultsHeader
+            title={city || "Paris"}
+            label={titleForType(type)}
+            description="Showing mock hotel results because search parameters were incomplete."
+          />
+          <ResultSection title="Hotels" count={hotels.results.length}>
+            {hotels.results.map((hotel) => (
+              <HotelCard key={hotel.hotelId} hotel={hotel} />
+            ))}
+          </ResultSection>
+        </div>
       );
     }
 

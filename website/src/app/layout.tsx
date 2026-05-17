@@ -3,6 +3,7 @@ import Link from "next/link";
 import "./globals.css";
 import { Providers } from "./providers";
 import ThemeToggle from "@/components/ThemeToggle";
+import LanguageSelector from "@/components/LanguageSelector";
 
 export const metadata: Metadata = {
   title: "Travel SRE AI Platform",
@@ -45,18 +46,7 @@ export default function RootLayout({
                 <button className="rounded-md px-2 py-1 text-slate-200 transition hover:bg-white/10 hover:text-sky-200">
                   EUR
                 </button>
-                <button className="flex items-center gap-1 rounded-md px-2 py-1 text-slate-200 transition hover:bg-white/10 hover:text-sky-200">
-                  <svg
-                    className="h-4 w-4"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M12 3v18m9-9H3" />
-                  </svg>
-                  <span>EN</span>
-                </button>
+                <LanguageSelector />
                 <button className="hidden rounded-md px-2 py-1 text-slate-200 transition hover:bg-white/10 hover:text-sky-200 sm:inline-flex">
                   Become a host
                 </button>

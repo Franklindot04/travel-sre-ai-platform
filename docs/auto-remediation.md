@@ -18,7 +18,7 @@ The agent evaluates the alert severity and the remediation label to decide which
 - Scale to 3 replicas  
 - Escalate to humans via Slack  
 
-This mirrors the remediation patterns used by large SRE organizations such as Google, Uber, and Expedia.
+This mirrors the remediation patterns used by large SRE organizations.
 
 ---
 

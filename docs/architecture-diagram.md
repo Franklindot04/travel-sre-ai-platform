@@ -1,10 +1,10 @@
 # Architecture Diagram
 
-This document provides a high‑level and detailed view of the platform architecture, including microservices, observability stack, namespaces, GitOps structure, and the AI SRE Agent auto‑remediation loop.
+This document provides a high‑level and detailed view of the platform architecture, including microservices, observability stack, namespaces, GitOps structure and the AI SRE Agent auto‑remediation loop.
 
 ---
 
-## 1. High‑Level System Architecture (Mermaid)
+## 1. High‑Level System Architecture
 
 ~~~mermaid
 flowchart TD
@@ -92,9 +92,7 @@ GitOps (ArgoCD ApplicationSet):
 
 ---
 
-## 3. Detailed Project Structure Diagram (Mermaid)
-
-Mermaid definition (paste into a ```mermaid block in your editor):
+## 3. Detailed Project Structure Diagram
 
 flowchart TD
 

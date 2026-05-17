@@ -5,8 +5,6 @@
 The platform is a Kubernetes-native, microservices-based travel booking system.  
 All services communicate internally using ClusterIP Services, with the API Gateway acting as the only public entrypoint.
 
-Mermaid (paste this into a ```mermaid block inside your repo):
-
 ```mermaid
 flowchart TD
     A[Client / Browser / Mobile] --> G[api-gateway]
@@ -186,4 +184,4 @@ The ui-portal is a frontend SPA that consumes:
 
 ---
 
-This document reflects the final architecture of the platform, aligned with the repo structure, GitOps model, observability stack, and AI SRE Agent capabilities.
+This document reflects the final architecture of the platform, aligned with the repo structure, GitOps model, observability stack and AI SRE Agent capabilities.

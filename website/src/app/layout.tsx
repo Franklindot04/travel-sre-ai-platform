@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import "./globals.css";
 import { Providers } from "./providers";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import ThemeToggle from "@/components/ThemeToggle";
+import LanguageSelector from "@/components/LanguageSelector";
+import CurrencySelector from "@/components/CurrencySelector";
 
 export const metadata: Metadata = {
   title: "Travel SRE AI Platform",
@@ -15,74 +18,49 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-100">
+      <body className="min-h-screen bg-background text-foreground">
         <Providers>
-
-          {/* FULL-WIDTH TOP BAR */}
-          <header className="w-full bg-slate-900 text-white">
-            <div className="flex items-center justify-between px-8 py-4">
-
-              {/* Left: Brand + Subtitle */}
-              <div className="flex items-baseline gap-3">
+          <header className="w-full bg-slate-950 text-white shadow-lg">
+            <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+              <Link href="/" className="flex items-baseline gap-3">
                 <span className="text-2xl font-bold tracking-tight">
                   Travel SRE AI
                 </span>
-                <span className="text-sm text-slate-300">
+                <span className="hidden text-sm text-slate-300 sm:inline">
                   A demo travel platform
                 </span>
-              </div>
+              </Link>
 
-              {/* Right: Actions */}
-              <div className="flex items-center gap-6 text-sm">
-                <button className="hover:text-sky-300 transition">EUR</button>
-
-                <button className="flex items-center gap-1 hover:text-sky-300 transition">
-                  <svg
-                    className="h-4 w-4"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M12 3v18m9-9H3" />
-                  </svg>
-                  <span>EN</span>
-                </button>
-
-                <button className="flex items-center gap-1 hover:text-sky-300 transition">
-                  <svg
-                    className="h-4 w-4"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M9.09 9a3 3 0 115.82 1c0 2-3 2-3 4" />
-                    <circle cx="12" cy="17" r="1" />
-                  </svg>
-                  Help
-                </button>
-
-                <button className="hover:text-sky-300 transition">
+              <div className="flex flex-wrap items-center gap-3 text-sm lg:gap-5">
+                <Link
+                  href="/search"
+                  className="rounded-md px-2 py-1 text-slate-200 transition hover:bg-white/10 hover:text-sky-200"
+                >
+                  Search
+                </Link>
+                <Link
+                  href="/booking"
+                  className="rounded-md px-2 py-1 text-slate-200 transition hover:bg-white/10 hover:text-sky-200"
+                >
+                  Bookings
+                </Link>
+                <CurrencySelector />
+                <LanguageSelector />
+                <button className="hidden rounded-md px-2 py-1 text-slate-200 transition hover:bg-white/10 hover:text-sky-200 sm:inline-flex">
                   Become a host
                 </button>
-
-                <button className="px-4 py-1.5 rounded-lg bg-white text-slate-900 font-semibold hover:bg-slate-100 transition">
+                <button className="rounded-lg bg-white px-4 py-2 font-semibold text-slate-950 transition hover:bg-slate-100">
                   Register
                 </button>
-
-                <button className="px-4 py-1.5 rounded-lg bg-sky-600 font-semibold hover:bg-sky-700 transition">
-                  log in
+                <button className="rounded-lg bg-sky-600 px-4 py-2 font-semibold text-white transition hover:bg-sky-500">
+                  Log in
                 </button>
-
                 <ThemeToggle />
               </div>
             </div>
           </header>
 
-          {/* CONSTRAINED MAIN CONTENT */}
-          <main className="mx-auto max-w-6xl px-4 py-6">
+          <main className="mx-auto max-w-7xl px-4 py-6 lg:px-8">
             {children}
           </main>
         </Providers>

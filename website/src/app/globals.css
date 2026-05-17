@@ -2,33 +2,73 @@
 
 /* Theme variables */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --surface: #ffffff;
+  --surface-muted: #f1f5f9;
+  --border: #cbd5e1;
+  --muted: #475569;
+  --accent: #2563eb;
+  --accent-foreground: #ffffff;
 }
 
-/* Dark mode (class-based) */
+/* Tailwind theme bridge */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-border: var(--border);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* Dark mode (class-based, works with toggle) */
 .dark {
-  --background: #0a0a0a;
-  --foreground: #ededed;
+  color-scheme: dark;
+  --background: #020617;
+  --foreground: #e2e8f0;
+  --surface: #0f172a;
+  --surface-muted: #1e293b;
+  --border: #334155;
+  --muted: #cbd5e1;
+  --accent: #60a5fa;
+  --accent-foreground: #0f172a;
 }
 
 /* Base styles */
+html {
+  min-height: 100%;
+}
+
 body {
-  @apply min-h-screen font-sans;
-  background-color: var(--background);
-  color: var(--foreground);
+  @apply min-h-screen bg-background text-foreground font-sans antialiased;
 }
 
 /* Reusable input */
 .input {
-  @apply border rounded-md px-3 py-2 text-sm;
-  background-color: var(--background);
-  color: var(--foreground);
+  @apply rounded-md border border-border bg-surface px-3 py-2 text-sm text-foreground shadow-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 dark:placeholder:text-slate-500;
 }
 
 /* Reusable card */
 .card {
-  @apply border rounded-lg p-4 shadow-sm;
-  background-color: var(--background);
-  color: var(--foreground);
+  @apply rounded-lg border border-border bg-surface text-foreground shadow-sm;
+}
+
+.text-muted {
+  color: var(--muted);
+}
+
+.travel-date-input::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0;
+}
+
+.travel-date-input::-webkit-inner-spin-button,
+.travel-date-input::-webkit-clear-button {
+  display: none;
 }

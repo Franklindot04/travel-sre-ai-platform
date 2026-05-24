@@ -409,6 +409,6 @@ This platform demonstrates **real‑world SRE engineering**:
 - Observability  
 - GitOps  
 
-It is a **portfolio‑grade**, **interview‑ready**, **production‑style** SRE platform showcasing modern reliability engineering.
+It is a **portfolio‑grade**, **production‑style** SRE platform showcasing modern reliability engineering.
 
 last update 12 05 2025

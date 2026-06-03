@@ -411,4 +411,8 @@ This platform demonstrates **real‑world SRE engineering**:
 
 It is a **portfolio‑grade**, **production‑style** SRE platform showcasing modern reliability engineering.
 
-last update 27 05 2025
+last update 03 06 2026
+
+## License
+
+This project is licensed under the Apache License 2.0.
